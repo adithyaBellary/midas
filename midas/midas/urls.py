@@ -16,10 +16,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 
+from ariadne.contrib.django.views import GraphQLView
 from .views import HomeView
+from .schema import schema
 
 urlpatterns = [
     path('', HomeView),
     path('tradeEngine/', include('tradeEngine.urls')),
+    path('graphql/', GraphQLView.as_view(schema=schema), name='graphql'),
     path('admin/', admin.site.urls),
 ]
