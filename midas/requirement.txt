@@ -7,3 +7,4 @@ python-dotenv==0.15.0
 pytz==2020.4
 sqlparse==0.2.4
 ariadne==0.12.0
+django-cors-headers==3.6.0
