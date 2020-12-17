@@ -17,7 +17,6 @@ from django.contrib import admin
 from django.urls import include, path
 
 from ariadne.contrib.django.views import GraphQLView
-# from ariadne.contrib.django import GraphQL
 from .views import HomeView
 from .schema import schema
 
