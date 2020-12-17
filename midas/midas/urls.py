@@ -15,8 +15,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
-
 from ariadne.contrib.django.views import GraphQLView
+
 from .views import HomeView
 from .schema import schema
 
