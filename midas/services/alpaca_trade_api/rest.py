@@ -30,6 +30,8 @@ from .entity import (
   PortfolioHistory
 )
 
+from . import polygon
+
 Positions = List[Position]
 Orders = List[Order]
 Assets = List[Asset]
