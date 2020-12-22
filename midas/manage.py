@@ -4,6 +4,10 @@ import os
 import sys
 from dotenv import load_dotenv, find_dotenv
 
+# from services.alpaca_trade_api import my_alpaca
+# from services.alpaca_trade_api import my_alpaca
+import services.alpaca_trade_api as my_alpaca
+
 def main():
     """Run administrative tasks."""
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'midas.settings')
