@@ -137,10 +137,10 @@ class _StreamConn(object):
 			return Account(msg)
 		if channel.startswith('T.'):
 			return Trade({trade_mapping[k]: v for k,
-						  v in msg.items() if k in trade_mapping})
+							v in msg.items() if k in trade_mapping})
 		if channel.startswith('Q.'):
 			return Quote({quote_mapping[k]: v for k,
-						  v in msg.items() if k in quote_mapping})
+							v in msg.items() if k in quote_mapping})
 		if channel.startswith('A.') or channel.startswith('AM.'):
 			# to be compatible with REST Agg
 			msg['t'] = msg['s']
@@ -202,8 +202,8 @@ class StreamConn(object):
 		self._debug = debug
 
 		self.trading_ws = _StreamConn(self._key_id,
-									  self._secret_key,
-									  self._base_url)
+										self._secret_key,
+										self._base_url)
 
 		if self._data_stream == 'polygon':
 			# DATA_PROXY_WS is used for the alpaca-proxy-agent.
@@ -217,8 +217,8 @@ class StreamConn(object):
 			self._data_prefixes = (('Q.', 'T.', 'A.', 'AM.'))
 		else:
 			self.data_ws = _StreamConn(self._key_id,
-									   self._secret_key,
-									   self._data_url)
+										 self._secret_key,
+										 self._data_url)
 			self._data_prefixes = (
 				('Q.', 'T.', 'AM.', 'alpacadatav1/'))
 
@@ -294,7 +294,9 @@ class StreamConn(object):
 				if loop.is_closed():
 					self.loop = asyncio.new_event_loop()
 					loop = self.loop
+				print('in run')
 				loop.run_until_complete(self.subscribe(initial_channels))
+				# self.subscribe(initial_channels)
 				loop.run_until_complete(self.consume())
 			except KeyboardInterrupt:
 				logging.info("Exiting on Interrupt")
@@ -321,16 +323,16 @@ class StreamConn(object):
 			self.data_ws = None
 		if renew:
 			self.trading_ws = _StreamConn(self._key_id,
-										  self._secret_key,
-										  self._base_url)
+											self._secret_key,
+											self._base_url)
 			if self._data_stream == 'polygon':
 				self.data_ws = polygon.StreamConn(
 					self._key_id + '-staging' if 'staging' in
 					self._base_url else self._key_id)
 			else:
 				self.data_ws = _StreamConn(self._key_id,
-										   self._secret_key,
-										   self._data_url)
+											 self._secret_key,
+											 self._data_url)
 
 	def on(self, channel_pat, symbols=None):
 		def decorator(func):

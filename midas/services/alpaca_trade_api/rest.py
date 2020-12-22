@@ -176,23 +176,23 @@ class REST(object):
     return self._request('PATCH', path, data)
 
   def delete(self, path, data=None):
-        return self._request('DELETE', path, data)
+    return self._request('DELETE', path, data)
 
   def data_get(self, path, data=None):
-      base_url: URL = get_data_url()
-      return self._request(
-          'GET', path, data, base_url=base_url, api_version='v1'
-      )
+    base_url: URL = get_data_url()
+    return self._request(
+        'GET', path, data, base_url=base_url, api_version='v1'
+    )
 
   def get_account(self) -> Account:
-      """Get the account"""
-      resp = self.get('/account')
-      return Account(resp)
+    """Get the account"""
+    resp = self.get('/account')
+    return Account(resp)
 
   def get_account_configurations(self) -> AccountConfigurations:
-      """Get account configs"""
-      resp = self.get('/account/configurations')
-      return AccountConfigurations(resp)
+    """Get account configs"""
+    resp = self.get('/account/configurations')
+    return AccountConfigurations(resp)
 
   def update_account_configurations(
             self,

@@ -3,10 +3,11 @@
 import os
 import sys
 from dotenv import load_dotenv, find_dotenv
+import threading
 
-# from services.alpaca_trade_api import my_alpaca
-# from services.alpaca_trade_api import my_alpaca
 import services.alpaca_trade_api as my_alpaca
+
+from test_hft import run_hft
 
 def main():
     """Run administrative tasks."""
@@ -24,7 +25,7 @@ def main():
         base_url = os.environ.get('PAPER_URL')
     else:
         key_id = os.environ.get('KEY_ID')
-        secret_key = os.environ.get('SECRET_KEY')
+        secret_key = os.environ.get('ALPACA_SECRET_KEY')
         base_url = os.environ.get('URL')
 
     api = my_alpaca.REST(
@@ -33,12 +34,12 @@ def main():
         base_url=base_url
     )
 
-    account = api.get_account()
-    buying_power = account.buying_power
-    print('buying power', buying_power)
-    barData = api.get_barset('AAPL', 'day', limit=5)
+    # account = api.get_account()
+    # buying_power = account.buying_power
+    # print('buying power', buying_power)
+    # barData = api.get_barset('AAPL', 'day', limit=5)
     # print('bar data', barData.df)
-    conn = my_alpaca.stream2.StreamConn(key_id=key_id, secret_key=secret_key)
+    # conn = my_alpaca.stream2.StreamConn(key_id=key_id, secret_key=secret_key)
 
     try:
         from django.core.management import execute_from_command_line
@@ -48,6 +49,13 @@ def main():
             "available on your PYTHONPATH environment variable? Did you "
             "forget to activate a virtual environment?"
         ) from exc
+    print('sys arg', sys.argv)
+    # t = threading.Thread(target=run_hft, args=[], daemon=True)
+    # t.start()
+    # run_hft()
+    if sys.argv[1] == 'runserver':
+      # if we are starting the server, load up the alpaca engine also
+      run_hft()
     execute_from_command_line(sys.argv)
 
 
