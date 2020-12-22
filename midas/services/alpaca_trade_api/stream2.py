@@ -75,6 +75,7 @@ class _StreamConn(object):
 				if isinstance(r, bytes):
 					r = r.decode('utf-8')
 				msg = json.loads(r)
+				print('msg in consume message', msg)
 				stream = msg.get('stream')
 				if stream is not None:
 					await self._dispatch(stream, msg)
@@ -247,6 +248,7 @@ class StreamConn(object):
 		If the necessary connection isn't open yet, it opens now.
 		This may raise ValueError if a channel is not recognized.
 		'''
+		print('subscribing')
 		trading_channels, data_channels = [], []
 
 		for c in channels:
@@ -278,6 +280,7 @@ class StreamConn(object):
 			await self.data_ws.unsubscribe(data_channels)
 
 	async def consume(self):
+		print('consuming')
 		await asyncio.gather(
 			self.trading_ws.consume(),
 			self.data_ws.consume(),
@@ -296,8 +299,9 @@ class StreamConn(object):
 					loop = self.loop
 				print('in run')
 				loop.run_until_complete(self.subscribe(initial_channels))
-				# self.subscribe(initial_channels)
+				print('done subscribing')
 				loop.run_until_complete(self.consume())
+				print('done consuming')
 			except KeyboardInterrupt:
 				logging.info("Exiting on Interrupt")
 				should_renew = False

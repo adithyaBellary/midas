@@ -42,19 +42,18 @@ def main():
     # conn = my_alpaca.stream2.StreamConn(key_id=key_id, secret_key=secret_key)
 
     try:
-        from django.core.management import execute_from_command_line
+      from django.core.management import execute_from_command_line
     except ImportError as exc:
-        raise ImportError(
-            "Couldn't import Django. Are you sure it's installed and "
-            "available on your PYTHONPATH environment variable? Did you "
-            "forget to activate a virtual environment?"
-        ) from exc
-    print('sys arg', sys.argv)
-    # t = threading.Thread(target=run_hft, args=[], daemon=True)
-    # t.start()
-    # run_hft()
+      raise ImportError(
+          "Couldn't import Django. Are you sure it's installed and "
+          "available on your PYTHONPATH environment variable? Did you "
+          "forget to activate a virtual environment?"
+      ) from exc
+
     if sys.argv[1] == 'runserver':
       # if we are starting the server, load up the alpaca engine also
+      # t = threading.Thread(target=run_hft, args=[], daemon=True)
+      # t.start()
       run_hft()
     execute_from_command_line(sys.argv)
 

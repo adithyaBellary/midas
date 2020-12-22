@@ -1,8 +1,5 @@
-# import argparse
 import pandas as pd
 import numpy as np
-# import alpaca_trade_api as tradeapi
-# from .const import *
 import time
 import logging
 import asyncio
@@ -10,20 +7,10 @@ import threading
 from dotenv import load_dotenv, find_dotenv
 import sys
 import os
-# cant do this if we want to test with heroku
-# sys.path.append('../alpaca_master/alpaca-trade-api-python/')
-# sys.path.append('../alpaca_trade_api')
-# import my_alpaca_trade_api_local as tradeapi
-# sys.path.append('/Users/adithya/Documents/Projects/alpaca_trade_api')
-# below uses the system installed version of the alpaca trade api
-# import alpaca_trade_api as tradeapi
-# below uses our local package it seems? Has all the chages i made with the logger and stuff
-# import my_alpaca_trade_api as tradeapi
+
 import services.alpaca_trade_api as tradeapi
 load_dotenv(find_dotenv())
 
-# TODO
-# Find a better way to import the tokens
 KEY_ID = os.environ.get('KEY_ID')
 SECRET_KEY = os.environ.get('ALPACA_SECRET_KEY')
 URL = os.environ.get('URL')
@@ -366,7 +353,6 @@ def run():
     )
 
 def run_hft():
-  print('running the hft algo')
   run()
 
 
