@@ -5,8 +5,13 @@ import re
 import os
 import websockets
 from .entity import (
-		Quote, Trade, Agg, Entity,
-		trade_mapping, quote_mapping, agg_mapping
+	Quote,
+	Trade,
+	Agg,
+	Entity,
+	trade_mapping,
+	quote_mapping,
+	agg_mapping
 )
 from .common import get_polygon_credentials, URL
 import logging

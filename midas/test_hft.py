@@ -174,7 +174,6 @@ def run():
     quote = Quote(use_threading=_use_threading)
     position = Position(use_threading=_use_threading)
     api = tradeapi.REST(key_id=PAPER_KEY_ID, secret_key=PAPER_SECRET_KEY, base_url=PAPER_URL)
-    # my_api = my_trade_api.rest.REST(key_id=PAPER_KEY_ID, secret_key=PAPER_SECRET_KEY)
     poly = api.polygon
 
     logging.basicConfig(
@@ -188,21 +187,8 @@ def run():
     api_key_id = PAPER_KEY_ID
     api_secret = PAPER_SECRET_KEY
     _stocks = ["AAPL"]
-    # 50k seems to be the limit
-    # test_data = get_history(time=50000, stock=_stocks, poly=poly)
-    # for ind, row in test_data["AAPL"].iterrows():
-    #     print(row)
 
-
-
-    # if we want to use multithreading
-    # conn = tradeapi.stream2.StreamConn(key_id=api_key_id, secret_key=api_secret, logger=_logger, use_threading=_use_threading, test_data=test_data)
-    # if we do not want to use multithreading
-
-    # this seems to be pointint to the installed package of alpaca tradeapi
-    # we dont want that. would rather have it point to my local version
     conn = tradeapi.StreamConn(key_id=api_key_id, secret_key=api_secret, data_stream='polygon')
-
 
     # track our buying power
     account = api.get_account()
@@ -211,14 +197,14 @@ def run():
 
     # if we want to get the bar data:
     # this will get us the daily bar data for AAPL over the last 5 trading days
-    barData = api.get_barset('AAPL', 'day', limit=5)
+    # barData = api.get_barset('AAPL', 'day', limit=5)
 
     # Define our message handling
-    @conn.on(r'^Q')
-    async def on_quote(conn, channel, data):
-        # Quote update received
-        # print('in on_quote ', data)
-        quote.update(data)
+    # @conn.on(r'^Q')
+    # async def on_quote(conn, channel, data):
+    #     # Quote update received
+    #     # print('in on_quote ', data)
+    #     quote.update(data)
 
     @conn.on(r'^AM')
     async def on_AM(conn, channel, data):
@@ -232,125 +218,89 @@ def run():
     async def on_trade(conn, channel, data):
         print('in on_trade ')
 
-        if quote.traded:
-            print('quote was traded')
-            return
-        # We've received a trade and might be ready to follow it
-        if (
-            data.timestamp <= (
-                quote.time + pd.Timedelta(np.timedelta64(50, 'ms'))
-            )
-        ):
-            # The trade came too close to the quote update
-            # and may have been for the previous level
-            return
-        if data.size >= 100:
-            # The trade was large enough to follow, so we check to see if
-            # we're ready to trade. We also check to see that the
-            # bid vs ask quantities (order book imbalance) indicate
-            # a movement in that direction. We also want to be sure that
-            # we're not buying or selling more than we should.
-            if (
-                data.price == quote.ask
-                and quote.bid_size > (quote.ask_size * 1.8)
-                and (
-                    position.total_shares + position.pending_buy_shares
-                ) < max_shares - 100
-            ):
-                # Everything looks right, so we submit our buy at the ask
-                try:
-                    o = api.submit_order(
-                        symbol=symbol, qty='100', side='buy',
-                        type='limit', time_in_force='day',
-                        limit_price=str(quote.ask),
-                        extended_hours=True,
-                    )
-                    # Approximate an IOC order by immediately cancelling
-                    api.cancel_order(o.id)
-                    position.update_pending_buy_shares(100)
-                    position.orders_filled_amount[o.id] = 0
-                    print('Buy at', quote.ask, flush=True)
-                    quote.traded = True
-                except Exception as e:
-                    print(e)
-            elif (
-                data.price == quote.bid
-                and quote.ask_size > (quote.bid_size * 1.8)
-                and (
-                    position.total_shares - position.pending_sell_shares
-                ) >= 100
-            ):
-                # Everything looks right, so we submit our sell at the bid
-                try:
-                    o = api.submit_order(
-                        symbol=symbol, qty='100', side='sell',
-                        type='limit', time_in_force='day',
-                        limit_price=str(quote.bid),
-                        extended_hours=True,
-                    )
-                    # Approximate an IOC order by immediately cancelling
-                    api.cancel_order(o.id)
-                    position.update_pending_sell_shares(100)
-                    position.orders_filled_amount[o.id] = 0
-                    print('Sell at', quote.bid, flush=True)
-                    quote.traded = True
-                except Exception as e:
-                    print(e)
+      # if quote.traded:
+      #     print('quote was traded')
+      #     return
+      # # We've received a trade and might be ready to follow it
+      # if (
+      #     data.timestamp <= (
+      #         quote.time + pd.Timedelta(np.timedelta64(50, 'ms'))
+      #     )
+      # ):
+      #     # The trade came too close to the quote update
+      #     # and may have been for the previous level
+      #     return
+      # if data.size >= 100:
+      #     # The trade was large enough to follow, so we check to see if
+      #     # we're ready to trade. We also check to see that the
+      #     # bid vs ask quantities (order book imbalance) indicate
+      #     # a movement in that direction. We also want to be sure that
+      #     # we're not buying or selling more than we should.
+      #     if (
+      #         data.price == quote.ask
+      #         and quote.bid_size > (quote.ask_size * 1.8)
+      #         and (
+      #             position.total_shares + position.pending_buy_shares
+      #         ) < max_shares - 100
+      #     ):
+      #         # Everything looks right, so we submit our buy at the ask
+      #         try:
+      #             o = api.submit_order(
+      #                 symbol=symbol, qty='100', side='buy',
+      #                 type='limit', time_in_force='day',
+      #                 limit_price=str(quote.ask),
+      #                 extended_hours=True,
+      #             )
+      #             # Approximate an IOC order by immediately cancelling
+      #             api.cancel_order(o.id)
+      #             position.update_pending_buy_shares(100)
+      #             position.orders_filled_amount[o.id] = 0
+      #             print('Buy at', quote.ask, flush=True)
+      #             quote.traded = True
+      #         except Exception as e:
+      #             print(e)
+      #     elif (
+      #         data.price == quote.bid
+      #         and quote.ask_size > (quote.bid_size * 1.8)
+      #         and (
+      #             position.total_shares - position.pending_sell_shares
+      #         ) >= 100
+      #     ):
+      #         # Everything looks right, so we submit our sell at the bid
+      #         try:
+      #             o = api.submit_order(
+      #                 symbol=symbol, qty='100', side='sell',
+      #                 type='limit', time_in_force='day',
+      #                 limit_price=str(quote.bid),
+      #                 extended_hours=True,
+      #             )
+      #             # Approximate an IOC order by immediately cancelling
+      #             api.cancel_order(o.id)
+      #             position.update_pending_sell_shares(100)
+      #             position.orders_filled_amount[o.id] = 0
+      #             print('Sell at', quote.bid, flush=True)
+      #             quote.traded = True
+      #         except Exception as e:
+      #             print(e)
 
     @conn.on(r'trade_updates')
     async def on_trade_updates(conn, channel, data):
-        # We got an update on one of the orders we submitted. We need to
-        # update our position with the new information.
-        print('in on_trade_updates ', data)
-        # TODO
-        # write to db here
-        event = data.event
-        if event == 'fill':
-            if data.order['side'] == 'buy':
-                position.update_total_shares(
-                    int(data.order['filled_qty'])
-                )
-            else:
-                position.update_total_shares(
-                    -1 * int(data.order['filled_qty'])
-                )
-            position.remove_pending_order(
-                data.order['id'], data.order['side']
-            )
-        elif event == 'partial_fill':
-            position.update_filled_amount(
-                data.order['id'], int(data.order['filled_qty']),
-                data.order['side']
-            )
-        elif event == 'canceled' or event == 'rejected':
-            position.remove_pending_order(
-                data.order['id'], data.order['side']
-            )
-
-    # doubt these are actual channels
-    @conn.on(r'trade_news')
-    async def on_trade_news(conn, channel, data):
-        # for future could somehow stream important news
-        # related to stocks and such
-        print('in on trade_news')
-
-    @conn.on(r'gibberish')
-    async def testing_stuff(conn, channel, data):
-        print('in on gibbe')
+      # We got an update on one of the orders we submitted. We need to
+      # update our position with the new information.
+      print('in on_trade_updates ', data)
 
 
     @conn.on(r'^status')
     async def on_status(conn, channel, data):
         _logger.info('channel: {}, data: {}'.format(channel, data))
 
-    async def s(t):
-        _logger.info('started sleeping in s()')
-        await asyncio.sleep(t)
-        _logger.info('done sleeping in s()')
-
-    conn.run(
-        ['T.AAPL', 'Q.AAPL', 'T.AMZN', 'A.AAPL', 'AM.AAPL']
-    )
+    conn.run([
+      'T.AAPL',
+      'Q.AAPL',
+      'T.AMZN',
+      'A.AAPL',
+      'AM.AAPL'
+    ])
 
 def run_hft():
   run()
