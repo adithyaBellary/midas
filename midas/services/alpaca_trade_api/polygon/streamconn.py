@@ -52,8 +52,8 @@ class StreamConn(object):
 		msg = await self._next()
 		if msg.get('status') != 'connected':
 			raise ValueError(
-					("Invalid response on Polygon websocket connection: {}"
-							.format(msg))
+				("Invalid response on Polygon websocket connection: {}"
+						.format(msg))
 			)
 		await self._dispatch(msg)
 		logging.info(f"connected to: {self._endpoint}")
