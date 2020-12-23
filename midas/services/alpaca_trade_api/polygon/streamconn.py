@@ -26,9 +26,11 @@ class StreamConn(object):
 		self._retry_wait = int(os.environ.get('APCA_RETRY_WAIT', 3))
 		self._retries = 0
 		self._consume_task = None
-		# self.loop = asyncio.get_event_loop()
 		try:
-			self.loop = asyncio.get_event_loop()
+			asyncio.get_event_loop()
+		except RuntimeError:
+			self.loop = asyncio.new_event_loop()
+			asyncio.set_event_loop(self.loop)
 		except websockets.WebSocketException as wse:
 			logging.warn(wse)
 			self.loop = asyncio.new_event_loop()
