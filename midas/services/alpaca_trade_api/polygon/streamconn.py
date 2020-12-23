@@ -187,6 +187,7 @@ class StreamConn(object):
 		initial_channels is the channels to start with.
 		'''
 		loop = self.loop
+		print('polygon is running')
 		try:
 			loop.run_until_complete(self.subscribe(initial_channels))
 			loop.run_forever()

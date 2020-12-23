@@ -195,28 +195,24 @@ class REST(object):
 		return AccountConfigurations(resp)
 
 	def update_account_configurations(
-						self,
-						no_shorting: bool = None,
-						dtbp_check: str = None,
-						trade_confirm_email: str = None,
-						suspend_trade: bool = None) -> AccountConfigurations:
-				"""
-				alpaca.markets/docs/api-documentation/api-v2/account-configuration/
-				Update account configs
-				:param dtbp_check: both, entry, or exit
-				:param trade_confirm_email: all or none
-				"""
-				params = {}
-				if no_shorting is not None:
-						params['no_shorting'] = no_shorting
-				if dtbp_check is not None:
-						params['dtbp_check'] = dtbp_check
-				if trade_confirm_email is not None:
-						params['trade_confirm_email'] = trade_confirm_email
-				if suspend_trade is not None:
-						params['suspend_trade'] = suspend_trade
-				resp = self.patch('/account/configurations', params)
-				return AccountConfigurations(resp)
+		self,
+		no_shorting: bool = None,
+		dtbp_check: str = None,
+		trade_confirm_email: str = None,
+		suspend_trade: bool = None
+	) -> AccountConfigurations:
+
+		params = {}
+		if no_shorting is not None:
+			params['no_shorting'] = no_shorting
+		if dtbp_check is not None:
+			params['dtbp_check'] = dtbp_check
+		if trade_confirm_email is not None:
+			params['trade_confirm_email'] = trade_confirm_email
+		if suspend_trade is not None:
+			params['suspend_trade'] = suspend_trade
+		resp = self.patch('/account/configurations', params)
+		return AccountConfigurations(resp)
 
 	def list_orders(self,
 									status: str = None,
@@ -226,34 +222,34 @@ class REST(object):
 									direction: str = None,
 									params=None,
 									nested: bool = None) -> Orders:
-			"""
-			Get a list of orders
-			https://docs.alpaca.markets/web-api/orders/#get-a-list-of-orders
+		"""
+		Get a list of orders
+		https://docs.alpaca.markets/web-api/orders/#get-a-list-of-orders
 
-			:param status: open, closed or all. Defaults to open.
-			:param limit: Defaults to 50 and max is 500
-			:param after: timestamp
-			:param until: timestamp
-			:param direction: asc or desc.
-			:param params: refer to documentation
-			"""
-			if params is None:
-					params = dict()
-			if limit is not None:
-					params['limit'] = limit
-			if after is not None:
-					params['after'] = after
-			if until is not None:
-					params['until'] = until
-			if direction is not None:
-					params['direction'] = direction
-			if status is not None:
-					params['status'] = status
-			if nested is not None:
-					params['nested'] = nested
-			url = '/orders'
-			resp = self.get(url, params)
-			return [Order(o) for o in resp]
+		:param status: open, closed or all. Defaults to open.
+		:param limit: Defaults to 50 and max is 500
+		:param after: timestamp
+		:param until: timestamp
+		:param direction: asc or desc.
+		:param params: refer to documentation
+		"""
+		if params is None:
+			params = dict()
+		if limit is not None:
+			params['limit'] = limit
+		if after is not None:
+			params['after'] = after
+		if until is not None:
+			params['until'] = until
+		if direction is not None:
+			params['direction'] = direction
+		if status is not None:
+			params['status'] = status
+		if nested is not None:
+			params['nested'] = nested
+		url = '/orders'
+		resp = self.get(url, params)
+		return [Order(o) for o in resp]
 
 	def submit_order(self,
 										symbol: str,
@@ -291,36 +287,36 @@ class REST(object):
 			"""
 			"""Request a new order"""
 			params = {
-					'symbol':        symbol,
-					'qty':           qty,
-					'side':          side,
-					'type':          type,
-					'time_in_force': time_in_force
+				'symbol':        symbol,
+				'qty':           qty,
+				'side':          side,
+				'type':          type,
+				'time_in_force': time_in_force
 			}
 			if limit_price is not None:
-					params['limit_price'] = FLOAT(limit_price)
+				params['limit_price'] = FLOAT(limit_price)
 			if stop_price is not None:
-					params['stop_price'] = FLOAT(stop_price)
+				params['stop_price'] = FLOAT(stop_price)
 			if client_order_id is not None:
-					params['client_order_id'] = client_order_id
+				params['client_order_id'] = client_order_id
 			if extended_hours is not None:
-					params['extended_hours'] = extended_hours
+				params['extended_hours'] = extended_hours
 			if order_class is not None:
-					params['order_class'] = order_class
+				params['order_class'] = order_class
 			if take_profit is not None:
-					if 'limit_price' in take_profit:
-							take_profit['limit_price'] = FLOAT(take_profit['limit_price'])
-					params['take_profit'] = take_profit
+				if 'limit_price' in take_profit:
+					take_profit['limit_price'] = FLOAT(take_profit['limit_price'])
+				params['take_profit'] = take_profit
 			if stop_loss is not None:
-					if 'limit_price' in stop_loss:
-							stop_loss['limit_price'] = FLOAT(stop_loss['limit_price'])
-					if 'stop_price' in stop_loss:
-							stop_loss['stop_price'] = FLOAT(stop_loss['stop_price'])
-					params['stop_loss'] = stop_loss
+				if 'limit_price' in stop_loss:
+					stop_loss['limit_price'] = FLOAT(stop_loss['limit_price'])
+				if 'stop_price' in stop_loss:
+					stop_loss['stop_price'] = FLOAT(stop_loss['stop_price'])
+				params['stop_loss'] = stop_loss
 			if trail_price is not None:
-					params['trail_price'] = trail_price
+				params['trail_price'] = trail_price
 			if trail_percent is not None:
-					params['trail_percent'] = trail_percent
+				params['trail_percent'] = trail_percent
 			resp = self.post('/orders', params)
 			return Order(resp)
 	def get_order_by_client_order_id(self, client_order_id: str) -> Order:
@@ -361,17 +357,17 @@ class REST(object):
 			"""
 			params = {}
 			if qty is not None:
-					params['qty'] = qty
+				params['qty'] = qty
 			if limit_price is not None:
-					params['limit_price'] = FLOAT(limit_price)
+				params['limit_price'] = FLOAT(limit_price)
 			if stop_price is not None:
-					params['stop_price'] = FLOAT(stop_price)
+				params['stop_price'] = FLOAT(stop_price)
 			if trail is not None:
-					params['trail'] = FLOAT(trail)
+				params['trail'] = FLOAT(trail)
 			if time_in_force is not None:
-					params['time_in_force'] = time_in_force
+				params['time_in_force'] = time_in_force
 			if client_order_id is not None:
-					params['client_order_id'] = client_order_id
+				params['client_order_id'] = client_order_id
 			resp = self.patch('/orders/{}'.format(order_id), params)
 			return Order(resp)
 
@@ -413,9 +409,9 @@ class REST(object):
 		return [Asset(o) for o in resp]
 
 	def get_asset(self, symbol: str) -> Asset:
-			"""Get an asset"""
-			resp = self.get('/assets/{}'.format(symbol))
-			return Asset(resp)
+		"""Get an asset"""
+		resp = self.get('/assets/{}'.format(symbol))
+		return Asset(resp)
 
 	def get_barset(self,
 									symbols,
@@ -446,20 +442,20 @@ class REST(object):
 			note: start can't be used with after. end cannot be used with until.
 			"""
 			if not isinstance(symbols, str):
-					symbols = ','.join(symbols)
+				symbols = ','.join(symbols)
 			params = {
-					'symbols': symbols,
+				'symbols': symbols,
 			}
 			if limit is not None:
-					params['limit'] = limit
+				params['limit'] = limit
 			if start is not None:
-					params['start'] = start
+				params['start'] = start
 			if end is not None:
-					params['end'] = end
+				params['end'] = end
 			if after is not None:
-					params['after'] = after
+				params['after'] = after
 			if until is not None:
-					params['until'] = until
+				params['until'] = until
 			resp = self.data_get('/bars/{}'.format(timeframe), params)
 			return BarSet(resp)
 
@@ -484,20 +480,20 @@ class REST(object):
 			return Aggs(resp)
 
 	def get_last_trade(self, symbol: str) -> Trade:
-			"""
-			Get the last trade for the given symbol
-			"""
-			resp = self.data_get('/last/stocks/{}'.format(symbol))
-			return Trade(resp['last'])
+		"""
+		Get the last trade for the given symbol
+		"""
+		resp = self.data_get('/last/stocks/{}'.format(symbol))
+		return Trade(resp['last'])
 
 	def get_last_quote(self, symbol: str) -> Quote:
-			"""Get the last trade for the given symbol"""
-			resp = self.data_get('/last_quote/stocks/{}'.format(symbol))
-			return Quote(resp['last'])
+		"""Get the last trade for the given symbol"""
+		resp = self.data_get('/last_quote/stocks/{}'.format(symbol))
+		return Quote(resp['last'])
 
 	def get_clock(self) -> Clock:
-			resp = self.get('/clock')
-			return Clock(resp)
+		resp = self.get('/clock')
+		return Clock(resp)
 
 	def get_activities(
 					self,
@@ -542,76 +538,76 @@ class REST(object):
 			return [AccountActivity(o) for o in resp]
 
 	def get_calendar(self, start: str = None, end: str = None) -> Calendars:
-			"""
-			:param start: isoformat date string eg '2006-01-02T15:04:05Z' or
-							'2006-01-02'
-			:param end: isoformat date string
-			"""
-			params = {}
-			if start is not None:
-					params['start'] = start
-			if end is not None:
-					params['end'] = end
-			resp = self.get('/calendar', data=params)
-			return [Calendar(o) for o in resp]
+		"""
+		:param start: isoformat date string eg '2006-01-02T15:04:05Z' or
+						'2006-01-02'
+		:param end: isoformat date string
+		"""
+		params = {}
+		if start is not None:
+				params['start'] = start
+		if end is not None:
+				params['end'] = end
+		resp = self.get('/calendar', data=params)
+		return [Calendar(o) for o in resp]
 
 	def get_watchlists(self) -> Watchlists:
-			"""Get the list of watchlists registered under the account"""
-			resp = self.get('/watchlists')
-			return [Watchlist(o) for o in resp]
+		"""Get the list of watchlists registered under the account"""
+		resp = self.get('/watchlists')
+		return [Watchlist(o) for o in resp]
 
 	def get_watchlist(self, watchlist_id: str) -> Watchlist:
-			"""Get a watchlist identified by the ID"""
-			resp = self.get('/watchlists/{}'.format((watchlist_id)))
-			return Watchlist(resp)
+		"""Get a watchlist identified by the ID"""
+		resp = self.get('/watchlists/{}'.format((watchlist_id)))
+		return Watchlist(resp)
 
 	def get_watchlist_by_name(self, watchlist_name: str) -> Watchlist:
-			"""Get a watchlist identified by its name"""
-			params = {
-					'name': watchlist_name,
-			}
-			resp = self.get('/watchlists:by_name', data=params)
-			return Watchlist(resp)
+		"""Get a watchlist identified by its name"""
+		params = {
+				'name': watchlist_name,
+		}
+		resp = self.get('/watchlists:by_name', data=params)
+		return Watchlist(resp)
 
 	def create_watchlist(self,
 												watchlist_name: str,
 												symbols=None) -> Watchlist:
-			"""Create a new watchlist with an optional initial set of assets"""
-			params = {
-					'name': watchlist_name,
-			}
-			if symbols is not None:
-					params['symbols'] = symbols
-			resp = self.post('/watchlists', data=params)
-			return Watchlist(resp)
+		"""Create a new watchlist with an optional initial set of assets"""
+		params = {
+				'name': watchlist_name,
+		}
+		if symbols is not None:
+				params['symbols'] = symbols
+		resp = self.post('/watchlists', data=params)
+		return Watchlist(resp)
 
 	def add_to_watchlist(self, watchlist_id: str, symbol: str) -> Watchlist:
-			"""Add an asset to the watchlist"""
-			resp = self.post(
-					'/watchlists/{}'.format(watchlist_id), data=dict(symbol=symbol)
-			)
-			return Watchlist(resp)
+		"""Add an asset to the watchlist"""
+		resp = self.post(
+				'/watchlists/{}'.format(watchlist_id), data=dict(symbol=symbol)
+		)
+		return Watchlist(resp)
 
 	def update_watchlist(self,
 												watchlist_id: str,
 												name: str = None,
 												symbols=None) -> Watchlist:
-			"""Update a watchlist's name and/or asset list"""
-			params = {}
-			if name is not None:
-					params['name'] = name
-			if symbols is not None:
-					params['symbols'] = symbols
-			resp = self.put('/watchlists/{}'.format(watchlist_id), data=params)
-			return Watchlist(resp)
+		"""Update a watchlist's name and/or asset list"""
+		params = {}
+		if name is not None:
+			params['name'] = name
+		if symbols is not None:
+			params['symbols'] = symbols
+		resp = self.put('/watchlists/{}'.format(watchlist_id), data=params)
+		return Watchlist(resp)
 
 	def delete_watchlist(self, watchlist_id: str) -> None:
-			"""Delete a watchlist identified by the ID permanently"""
-			self.delete('/watchlists/{}'.format(watchlist_id))
+		"""Delete a watchlist identified by the ID permanently"""
+		self.delete('/watchlists/{}'.format(watchlist_id))
 
 	def delete_from_watchlist(self, watchlist_id: str, symbol: str) -> None:
-			"""Remove an asset from the watchlist's asset list"""
-			self.delete('/watchlists/{}/{}'.format(watchlist_id, symbol))
+		"""Remove an asset from the watchlist's asset list"""
+		self.delete('/watchlists/{}/{}'.format(watchlist_id, symbol))
 
 	def get_portfolio_history(self,
 														date_start: str = None,
@@ -619,38 +615,38 @@ class REST(object):
 														period: str = None,
 														timeframe=None,
 														extended_hours: bool = None) -> PortfolioHistory:
-			"""
-			alpaca.markets/docs/api-documentation/api-v2/portfolio-history/
-			:param date_start: YYYY-MM-DD
-			:param date_end: YYYY-MM-DD
-			:param period: The duration of the data in <number> + <unit>
-							such as 1D, where <unit> can be D for day, W for week,
-							M for month and A for year. Defaults to 1M.
-			:param timeframe: The resolution of time window. 1Min, 5Min, 15Min,
-							1H, or 1D
-			:param extended_hours: bool. If true, include extended hours in the
-							result.
-			"""
-			params = {}
-			if date_start is not None:
-					params['date_start'] = date_start
-			if date_end is not None:
-					params['date_end'] = date_end
-			if period is not None:
-					params['period'] = period
-			if timeframe is not None:
-					params['timeframe'] = timeframe
-			if extended_hours is not None:
-					params['extended_hours'] = extended_hours
-			return PortfolioHistory(
-					self.get('/account/portfolio/history', data=params)
-			)
+		"""
+		alpaca.markets/docs/api-documentation/api-v2/portfolio-history/
+		:param date_start: YYYY-MM-DD
+		:param date_end: YYYY-MM-DD
+		:param period: The duration of the data in <number> + <unit>
+						such as 1D, where <unit> can be D for day, W for week,
+						M for month and A for year. Defaults to 1M.
+		:param timeframe: The resolution of time window. 1Min, 5Min, 15Min,
+						1H, or 1D
+		:param extended_hours: bool. If true, include extended hours in the
+						result.
+		"""
+		params = {}
+		if date_start is not None:
+				params['date_start'] = date_start
+		if date_end is not None:
+				params['date_end'] = date_end
+		if period is not None:
+				params['period'] = period
+		if timeframe is not None:
+				params['timeframe'] = timeframe
+		if extended_hours is not None:
+				params['extended_hours'] = extended_hours
+		return PortfolioHistory(
+				self.get('/account/portfolio/history', data=params)
+		)
 
 	def __enter__(self):
-			return self
+		return self
 
 	def close(self):
-			self._session.close()
+		self._session.close()
 
 	def __exit__(self, exc_type, exc_val, exc_tb):
-			self.close()
+		self.close()
