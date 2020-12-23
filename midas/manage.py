@@ -52,9 +52,9 @@ def main():
 
   if sys.argv[1] == 'runserver':
     # if we are starting the server, load up the alpaca engine also
-    # t = threading.Thread(target=run_hft, args=[], daemon=True)
-    # t.start()
-    run_hft()
+    t = threading.Thread(target=run_hft, args=[])
+    t.start()
+    # run_hft()
   execute_from_command_line(sys.argv)
 
 
