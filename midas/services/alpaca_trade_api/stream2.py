@@ -4,15 +4,15 @@ import os
 import re
 import traceback
 from asyncio import CancelledError
-
 import websockets
+from typing import List, Callable
+import logging
+import datetime
+
 from .common import get_base_url, get_data_url, get_credentials, URL
 from .entity import Account, Entity, trade_mapping, agg_mapping, quote_mapping
 from . import polygon
 from .entity import Trade, Quote, Agg
-import logging
-from typing import List, Callable
-
 
 class _StreamConn(object):
 	def __init__(self, key_id: str, secret_key: str, base_url: URL):
@@ -70,15 +70,21 @@ class _StreamConn(object):
 	async def _consume_msg(self):
 		ws = self._ws
 		try:
+			# wonder what happens when we take away this while loop?
 			while True:
 				r = await ws.recv()
 				if isinstance(r, bytes):
 					r = r.decode('utf-8')
 				msg = json.loads(r)
+				print('consuming in alpaca', msg)
 				stream = msg.get('stream')
 				if stream is not None:
 					await self._dispatch(stream, msg)
+        # check the time
+        # when the market is about to open
+        # when the market is going to close
 		except websockets.WebSocketException as wse:
+			print('exception in consuming message')
 			logging.warn(wse)
 			await self.close()
 			asyncio.ensure_future(self._ensure_ws())
@@ -107,6 +113,7 @@ class _StreamConn(object):
 		if len(channels) > 0:
 			await self._ensure_ws()
 			self._streams |= set(channels)
+			print('self._streams', self._streams)
 			await self._ws.send(json.dumps({
 				'action': 'listen',
 				'data': {
@@ -137,10 +144,10 @@ class _StreamConn(object):
 			return Account(msg)
 		if channel.startswith('T.'):
 			return Trade({trade_mapping[k]: v for k,
-						  v in msg.items() if k in trade_mapping})
+							v in msg.items() if k in trade_mapping})
 		if channel.startswith('Q.'):
 			return Quote({quote_mapping[k]: v for k,
-						  v in msg.items() if k in quote_mapping})
+							v in msg.items() if k in quote_mapping})
 		if channel.startswith('A.') or channel.startswith('AM.'):
 			# to be compatible with REST Agg
 			msg['t'] = msg['s']
@@ -201,9 +208,11 @@ class StreamConn(object):
 		self._data_stream = _data_stream
 		self._debug = debug
 
-		self.trading_ws = _StreamConn(self._key_id,
-									  self._secret_key,
-									  self._base_url)
+		self.trading_ws = _StreamConn(
+			self._key_id,
+			self._secret_key,
+			self._base_url
+		)
 
 		if self._data_stream == 'polygon':
 			# DATA_PROXY_WS is used for the alpaca-proxy-agent.
@@ -216,9 +225,11 @@ class StreamConn(object):
 				self._key_id)
 			self._data_prefixes = (('Q.', 'T.', 'A.', 'AM.'))
 		else:
-			self.data_ws = _StreamConn(self._key_id,
-									   self._secret_key,
-									   self._data_url)
+			self.data_ws = _StreamConn(
+				self._key_id,
+				self._secret_key,
+				self._data_url
+			)
 			self._data_prefixes = (
 				('Q.', 'T.', 'AM.', 'alpacadatav1/'))
 
@@ -247,6 +258,7 @@ class StreamConn(object):
 		If the necessary connection isn't open yet, it opens now.
 		This may raise ValueError if a channel is not recognized.
 		'''
+		print('subscribing to channels in alpaca', channels)
 		trading_channels, data_channels = [], []
 
 		for c in channels:
@@ -278,6 +290,7 @@ class StreamConn(object):
 			await self.data_ws.unsubscribe(data_channels)
 
 	async def consume(self):
+		print('consuming')
 		await asyncio.gather(
 			self.trading_ws.consume(),
 			self.data_ws.consume(),
@@ -294,8 +307,11 @@ class StreamConn(object):
 				if loop.is_closed():
 					self.loop = asyncio.new_event_loop()
 					loop = self.loop
+				print('in run')
 				loop.run_until_complete(self.subscribe(initial_channels))
+				print('done subscribing')
 				loop.run_until_complete(self.consume())
+				print('done consuming')
 			except KeyboardInterrupt:
 				logging.info("Exiting on Interrupt")
 				should_renew = False
@@ -320,17 +336,21 @@ class StreamConn(object):
 			await self.data_ws.close()
 			self.data_ws = None
 		if renew:
-			self.trading_ws = _StreamConn(self._key_id,
-										  self._secret_key,
-										  self._base_url)
+			self.trading_ws = _StreamConn(
+				self._key_id,
+				self._secret_key,
+				self._base_url
+			)
 			if self._data_stream == 'polygon':
 				self.data_ws = polygon.StreamConn(
 					self._key_id + '-staging' if 'staging' in
 					self._base_url else self._key_id)
 			else:
-				self.data_ws = _StreamConn(self._key_id,
-										   self._secret_key,
-										   self._data_url)
+				self.data_ws = _StreamConn(
+					self._key_id,
+					self._secret_key,
+					self._data_url
+				)
 
 	def on(self, channel_pat, symbols=None):
 		def decorator(func):
