@@ -4,15 +4,15 @@ import os
 import re
 import traceback
 from asyncio import CancelledError
-
 import websockets
+from typing import List, Callable
+import logging
+import datetime
+
 from .common import get_base_url, get_data_url, get_credentials, URL
 from .entity import Account, Entity, trade_mapping, agg_mapping, quote_mapping
 from . import polygon
 from .entity import Trade, Quote, Agg
-import logging
-from typing import List, Callable
-
 
 class _StreamConn(object):
 	def __init__(self, key_id: str, secret_key: str, base_url: URL):
@@ -80,6 +80,9 @@ class _StreamConn(object):
 				stream = msg.get('stream')
 				if stream is not None:
 					await self._dispatch(stream, msg)
+        # check the time
+        # when the market is about to open
+        # when the market is going to close
 		except websockets.WebSocketException as wse:
 			print('exception in consuming message')
 			logging.warn(wse)

@@ -58,6 +58,12 @@ def run():
   async def on_status(conn, channel, data):
     print('channel: {}, data: {}'.format(channel, data))
 
+  @conn.on(r'^time')
+  async def on_time(conn, channel, data):
+    # handler for time updates:
+      # like when market is about to open
+      # when market is about to close
+
   conn.run([
     'A.AAPL',
     'AM.AAPL',

@@ -1,9 +1,9 @@
-# from django.db import models
 from djongo import models
 import datetime
 from django.utils import timezone
 
 # Create your models here.
+# these models will be what is used with the db
 
 # A Test Trade Object
 class TestTrade(models.Model):
