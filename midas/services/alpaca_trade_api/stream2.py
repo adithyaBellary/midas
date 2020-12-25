@@ -70,16 +70,18 @@ class _StreamConn(object):
 	async def _consume_msg(self):
 		ws = self._ws
 		try:
+			# wonder what happens when we take away this while loop?
 			while True:
 				r = await ws.recv()
 				if isinstance(r, bytes):
 					r = r.decode('utf-8')
 				msg = json.loads(r)
-				print('msg in consume message', msg)
+				print('consuming in alpaca', msg)
 				stream = msg.get('stream')
 				if stream is not None:
 					await self._dispatch(stream, msg)
 		except websockets.WebSocketException as wse:
+			print('exception in consuming message')
 			logging.warn(wse)
 			await self.close()
 			asyncio.ensure_future(self._ensure_ws())
@@ -108,6 +110,7 @@ class _StreamConn(object):
 		if len(channels) > 0:
 			await self._ensure_ws()
 			self._streams |= set(channels)
+			print('self._streams', self._streams)
 			await self._ws.send(json.dumps({
 				'action': 'listen',
 				'data': {
@@ -202,9 +205,11 @@ class StreamConn(object):
 		self._data_stream = _data_stream
 		self._debug = debug
 
-		self.trading_ws = _StreamConn(self._key_id,
-										self._secret_key,
-										self._base_url)
+		self.trading_ws = _StreamConn(
+			self._key_id,
+			self._secret_key,
+			self._base_url
+		)
 
 		if self._data_stream == 'polygon':
 			# DATA_PROXY_WS is used for the alpaca-proxy-agent.
@@ -217,9 +222,11 @@ class StreamConn(object):
 				self._key_id)
 			self._data_prefixes = (('Q.', 'T.', 'A.', 'AM.'))
 		else:
-			self.data_ws = _StreamConn(self._key_id,
-										 self._secret_key,
-										 self._data_url)
+			self.data_ws = _StreamConn(
+				self._key_id,
+				self._secret_key,
+				self._data_url
+			)
 			self._data_prefixes = (
 				('Q.', 'T.', 'AM.', 'alpacadatav1/'))
 
@@ -248,7 +255,7 @@ class StreamConn(object):
 		If the necessary connection isn't open yet, it opens now.
 		This may raise ValueError if a channel is not recognized.
 		'''
-		print('subscribing')
+		print('subscribing to channels in alpaca', channels)
 		trading_channels, data_channels = [], []
 
 		for c in channels:

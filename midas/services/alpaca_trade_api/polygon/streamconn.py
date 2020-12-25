@@ -42,6 +42,7 @@ class StreamConn(object):
 			asyncio.set_event_loop(self.loop)
 
 	async def connect(self):
+		print('connecting to polygon')
 		await self._dispatch({
 			'ev': 'status',
 			'status': 'connecting',
@@ -95,6 +96,7 @@ class StreamConn(object):
 
 	async def _recv(self):
 		try:
+			# need this loop
 			while True:
 				r = await self._ws.recv()
 				if isinstance(r, bytes):
@@ -113,11 +115,14 @@ class StreamConn(object):
 
 	async def consume(self):
 		if self._consume_task:
+			print('consuming in polygon')
 			await self._consume_task
 
 	async def _consume_msg(self):
+		# if (self._stream):
 		async for data in self._stream:
 			stream = data.get('ev')
+			print('consuming message in polygon')
 			if stream:
 				await self._dispatch(data)
 			elif data.get('status') == 'disconnected':
@@ -136,7 +141,7 @@ class StreamConn(object):
 			try:
 				await self.connect()
 				if self._streams:
-						await self.subscribe(self._streams)
+					await self.subscribe(self._streams)
 				break
 			except Exception as e:
 				await self._dispatch({'ev': 'status',
@@ -236,11 +241,11 @@ class StreamConn(object):
 		self._handler_symbols[func] = symbols
 
 
-		def deregister(self, channel_pat):
-			if isinstance(channel_pat, str):
-				channel_pat = re.compile(channel_pat)
-			self._handler_symbols.pop(self._handlers[channel_pat], None)
-			del self._handlers[channel_pat]
+	def deregister(self, channel_pat):
+		if isinstance(channel_pat, str):
+			channel_pat = re.compile(channel_pat)
+		self._handler_symbols.pop(self._handlers[channel_pat], None)
+		del self._handlers[channel_pat]
 
 
 
