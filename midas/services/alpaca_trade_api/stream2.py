@@ -80,9 +80,9 @@ class _StreamConn(object):
 				stream = msg.get('stream')
 				if stream is not None:
 					await self._dispatch(stream, msg)
-        # check the time
-        # when the market is about to open
-        # when the market is going to close
+				# check the time
+				# when the market is about to open
+				# when the market is going to close
 		except websockets.WebSocketException as wse:
 			print('exception in consuming message')
 			logging.warn(wse)
@@ -258,7 +258,7 @@ class StreamConn(object):
 		If the necessary connection isn't open yet, it opens now.
 		This may raise ValueError if a channel is not recognized.
 		'''
-		print('subscribing to channels in alpaca', channels)
+
 		trading_channels, data_channels = [], []
 
 		for c in channels:
