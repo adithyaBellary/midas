@@ -51,18 +51,20 @@ def run():
 	# track our buying power
 	account = api.get_account()
 
-	model = scalpModel.ScalpModel(
-		api=api,
-		symbol='AAPL'
-	)
-	# model.on_bar(tick=BarTick(o=102.3, ticker='AAPL'))
-	# model._outOfMarket()
-	model.get_olders()
-	# model.update_time()
+	# hardcoding the stocks of interesst might not be the best way forward
+	symbols = ['NIO', 'AAPL', 'MSFT']
+	scalp_algos = {}
+	lot = 10
+
+	for sym in symbols:
+		fleet[sym] = ScalpModel(sym, api, lot)
+
 
 	@conn.on(r'^AM')
 	async def on_AM(conn, channel, data):
-		print('in AM ', data)
+		# print('in AM ', data)
+		if data.symbol in scalp_algos:
+			scalp_algos[data.symbol].on_bar(data)
 
 	@conn.on(r'^A$')
 	async def on_A(conn, channel, data):
@@ -76,11 +78,37 @@ def run():
 	async def on_trade_updates(conn, channel, data):
 		# We got an update on one of the orders we submitted. We need to
 		# update our position with the new information.
-		print('in on_trade_updates ', data)
+		# print('in on_trade_updates ', data)
+		logger.info(f'trade_updates {data}')
+		symbol = data.order['symbol']
+		if symbol in fleet:
+			fleet[symbol].on_order_update(data.event, data.order)
 
 	@conn.on(r'^status')
 	async def on_status(conn, channel, data):
 		print('channel: {}, data: {}'.format(channel, data))
+
+	async def scalp_periodic():
+		while True:
+			if not api.get_clock().is_open:
+				logger.info('exit as market is not open')
+				sys.exit(0)
+
+			await asyncio.sleep(30)
+			positions = api.list_positions()
+			for symbol, algo in scalp_algos.items():
+				pos = [p for p in positions if p.symbol == symbol]
+				algo.checkup(pos[0] if len(pos) > 0 else None)
+
+	channels = ['trade_updates'] + ['AM.' + symbol for symbol in symbols]
+
+	# need to rethink how this runs
+	loop = conn.loop
+	loop.run_until_complete(asyncio.gather(
+		stream.subscribe(channels),
+		periodic(),
+	))
+	loop.close()
 
 	# we will need to run the periodic check function with this run Function
 	# conn.run([

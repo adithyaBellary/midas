@@ -15,10 +15,12 @@ class ScalpModel(object):
     self,
     symbol: str,
     api = None,
+    lot,
     testing: bool = False,
   ):
     self.test_string: str = 'hello i am in the scalping algo!!!'
     # alpaca api so that we can submit trades and such
+    self._lot = lot
     self._api = api
     self._bars = []
     # each class instance will take care of only one symbol
@@ -76,8 +78,6 @@ class ScalpModel(object):
           self._l.warn(f'state {self._state} mismatch order {self._order}')
 
   def _outOfMarket(self) -> bool:
-    # print(self._now().time() >= date.fromtimestamp())
-    # print('time', self._now().time() > self._closing_time)
     return self._now().time() > self._closing_time
 
   def _now(self, format: bool = False):
