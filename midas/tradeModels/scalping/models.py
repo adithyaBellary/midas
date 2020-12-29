@@ -14,7 +14,7 @@ class ScalpModel(object):
   def __init__(
     self,
     symbol: str,
-    api = None,
+    api,
     lot,
     testing: bool = False,
   ):
@@ -37,20 +37,22 @@ class ScalpModel(object):
     # print('market_open', market_open)
     # print('tomorrow', tomorrow)
 
-    # data = api.polygon.historic_agg_v2(self._symbol, 1, 'minute', today, tomorrow, unadjusted=False)
+    data = api.polygon.historic_agg_v2(self._symbol, 1, 'minute', today, tomorrow, unadjusted=False).df
     _from = datetime.fromisoformat('2020-12-22').strftime('%Y-%m-%d')
     to = datetime.fromisoformat('2020-12-23').strftime('%Y-%m-%d')
-    data = api.polygon.historic_agg_v2(
-      'AAPL',
-      1,
-      'minute',
-      _from,
-      to,
-      unadjusted=False).df
+    # data = api.polygon.historic_agg_v2(
+    #   'AAPL',
+    #   1,
+    #   'minute',
+    #   _from,
+    #   to,
+    #   unadjusted=False).df
 
     # still have to figure out how to do this correctly
     # bars = data[market_open:]
-    # print('data', data)
+    print('data', data)
+    # print('market_open', market_open)
+    print('data (sliced', data[market_open:])
 
     # close at 3:50
     self._closing_time = time(15, 50)
@@ -59,7 +61,7 @@ class ScalpModel(object):
     symbol = self._symbol
     order = [o for o in self._api.list_orders() if o.symbol == symbol]
     position = [p for p in self._api.list_positions() if p.symbol == symbol]
-    self._order = order[0] if len(position) > 0 else None
+    self._order = order[0] if len(order) > 0 else None
     self._position = position[0] if len(position) > 0 else None
 
     if self._position is not None:
@@ -106,7 +108,7 @@ class ScalpModel(object):
     # 2020-12-29 01:18:44.506556+00:00
     # need to convert to est from utc (bc that what we are looking at by default)
     order_submitted_at = datetime.fromisoformat(order.submitted_at).astimezone(ESTtz)
-
+    print('ckecking up')
     if (
       order is not None and
       order.side == 'buy' and

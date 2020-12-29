@@ -57,7 +57,7 @@ def run():
 	lot = 10
 
 	for sym in symbols:
-		fleet[sym] = ScalpModel(sym, api, lot)
+		scalp_algos[sym] = scalpModel.ScalpModel(sym, api, lot)
 
 
 	@conn.on(r'^AM')
@@ -81,8 +81,8 @@ def run():
 		# print('in on_trade_updates ', data)
 		logger.info(f'trade_updates {data}')
 		symbol = data.order['symbol']
-		if symbol in fleet:
-			fleet[symbol].on_order_update(data.event, data.order)
+		if symbol in scalp_algos:
+			scalp_algos[symbol].on_order_update(data.event, data.order)
 
 	@conn.on(r'^status')
 	async def on_status(conn, channel, data):
@@ -103,12 +103,12 @@ def run():
 	channels = ['trade_updates'] + ['AM.' + symbol for symbol in symbols]
 
 	# need to rethink how this runs
-	loop = conn.loop
-	loop.run_until_complete(asyncio.gather(
-		stream.subscribe(channels),
-		periodic(),
-	))
-	loop.close()
+	# loop = conn.loop
+	# loop.run_until_complete(asyncio.gather(
+	# 	stream.subscribe(channels),
+	# 	periodic(),
+	# ))
+	# loop.close()
 
 	# we will need to run the periodic check function with this run Function
 	# conn.run([
