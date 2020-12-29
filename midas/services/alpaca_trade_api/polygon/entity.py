@@ -82,7 +82,7 @@ class Aggsv2(list):
 	def __init__(self, raw):
 		self._raw = raw
 		super().__init__([
-			Agg[tick] for tick in self.rename_keys()
+			Agg(tick) for tick in self.rename_keys()
 		])
 
 	def _raw_results(self):
@@ -279,88 +279,75 @@ class EntityList(list):
 		self._raw = raw
 
 class Dividend(Entity):
-		pass
-
+	pass
 
 class Dividends(EntityList):
-		_entity_class = Dividend
-
+	_entity_class = Dividend
 
 class Split(Entity):
-		pass
-
+	pass
 
 class Splits(EntityList):
-		_entity_class = Split
-
-
+	_entity_class = Split
 class Earning(Entity):
-		pass
-
+	pass
 
 class Earnings(EntityList):
-		_entity_class = Earning
-
+	_entity_class = Earning
 
 class Financial(Entity):
-		pass
-
+	pass
 
 class Financials(EntityList):
-		_entity_class = Financial
-
+	_entity_class = Financial
 
 class News(Entity):
-		pass
-
+	pass
 
 class NewsList(EntityList):
-		_entity_class = News
-
+	_entity_class = News
 
 class Ticker(Entity):
-		pass
-
+	pass
 
 class Symbol(Entity):
-		pass
-
+	pass
 
 class DailyOpenClose(Entity):
-		pass
+	pass
 
 trade_mapping = {
-		"sym": "symbol",
-		"c": "conditions",
-		"x": "exchange",
-		"p": "price",
-		"s": "size",
-		"t": "timestamp"
+	"sym": "symbol",
+	"c": "conditions",
+	"x": "exchange",
+	"p": "price",
+	"s": "size",
+	"t": "timestamp"
 }
 
 quote_mapping = {
-		"sym": "symbol",
-		"ax": "askexchange",
-		"ap": "askprice",
-		"as": "asksize",
-		"bx": "bidexchange",
-		"bp": "bidprice",
-		"bs": "bidsize",
-		"c": "condition",
-		"t": "timestamp"
+	"sym": "symbol",
+	"ax": "askexchange",
+	"ap": "askprice",
+	"as": "asksize",
+	"bx": "bidexchange",
+	"bp": "bidprice",
+	"bs": "bidsize",
+	"c": "condition",
+	"t": "timestamp"
 }
 
 agg_mapping = {
-		"sym": "symbol",
-		"o": "open",
-		"c": "close",
-		"h": "high",
-		"l": "low",
-		"a": "average",
-		"x": "exchange",
-		"v": "volume",
-		"s": "start",
-		"e": "end",
-		"vw": "vwap",
-		"av": "totalvolume",
+	"sym": "symbol",
+	"o": "open",
+	"c": "close",
+	"h": "high",
+	"l": "low",
+	"a": "average",
+	"x": "exchange",
+	"v": "volume",
+	"s": "start",
+	"e": "end",
+	"vw": "vwap",
+	"av": "totalvolume",
 }

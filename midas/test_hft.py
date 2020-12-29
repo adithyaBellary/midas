@@ -9,6 +9,9 @@ import sys
 import os
 
 import services.alpaca_trade_api as tradeapi
+import tradeModels.scalping as scalpModel
+from tradeModels.scalping.typedefs import BarTick
+
 load_dotenv(find_dotenv())
 
 KEY_ID = os.environ.get('KEY_ID')
@@ -48,6 +51,15 @@ def run():
 	# track our buying power
 	account = api.get_account()
 
+	model = scalpModel.ScalpModel(
+		api=api,
+		symbol='AAPL'
+	)
+	# model.on_bar(tick=BarTick(o=102.3, ticker='AAPL'))
+	# model._outOfMarket()
+	model.get_olders()
+	# model.update_time()
+
 	@conn.on(r'^AM')
 	async def on_AM(conn, channel, data):
 		print('in AM ', data)
@@ -70,20 +82,14 @@ def run():
 	async def on_status(conn, channel, data):
 		print('channel: {}, data: {}'.format(channel, data))
 
-	@conn.on(r'^time')
-	async def on_time(conn, channel, data):
-		pass
-		# handler for time updates:
-			# like when market is about to open
-			# when market is about to close
-
-	conn.run([
-		'A.AAPL',
-		# 'AM.AAPL',
-		# 'AM.*',
-		'trade_updates',
-		'account_updates'
-	])
+	# we will need to run the periodic check function with this run Function
+	# conn.run([
+	# 	'A.AAPL',
+	# 	# 'AM.AAPL',
+	# 	# 'AM.*',
+	# 	'trade_updates',
+	# 	'account_updates'
+	# ])
 
 def run_hft():
 	run()
