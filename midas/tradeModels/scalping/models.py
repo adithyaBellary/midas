@@ -29,6 +29,10 @@ class ScalpModel(object):
 
     self.initialize_state()
 
+    # check if the market is open
+    clock = self._api.get_clock()
+    print('open', clock.next_open)
+    print('close', clock.next_close)
     now = self._now().strftime('%Y-%m-%d %H:%M')
     market_open = datetime.fromisoformat(now).replace(hour=9, minute=30)
     today = self._now(format=True)
@@ -37,6 +41,7 @@ class ScalpModel(object):
     # print('market_open', market_open)
     # print('tomorrow', tomorrow)
 
+    # what if data gives us an empty data frame? like when starting this on the weekend or after market close
     data = api.polygon.historic_agg_v2(self._symbol, 1, 'minute', today, tomorrow, unadjusted=False).df
     _from = datetime.fromisoformat('2020-12-22').strftime('%Y-%m-%d')
     to = datetime.fromisoformat('2020-12-23').strftime('%Y-%m-%d')
@@ -50,9 +55,10 @@ class ScalpModel(object):
 
     # still have to figure out how to do this correctly
     # bars = data[market_open:]
+    # self._bars = bars
     print('data', data)
-    # print('market_open', market_open)
-    print('data (sliced', data[market_open:])
+    print('market_open', market_open)
+    # print('data (sliced', data[market_open:])
 
     # close at 3:50
     self._closing_time = time(15, 50)

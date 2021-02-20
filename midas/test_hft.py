@@ -91,6 +91,7 @@ def run():
 	async def scalp_periodic():
 		while True:
 			if not api.get_clock().is_open:
+				print('we not open')
 				logger.info('exit as market is not open')
 				sys.exit(0)
 
@@ -103,12 +104,13 @@ def run():
 	channels = ['trade_updates'] + ['AM.' + symbol for symbol in symbols]
 
 	# need to rethink how this runs
-	# loop = conn.loop
-	# loop.run_until_complete(asyncio.gather(
-	# 	stream.subscribe(channels),
-	# 	periodic(),
-	# ))
-	# loop.close()
+	loop = conn.loop
+	loop.run_until_complete(asyncio.gather(
+		# conn.subscribe(channels),
+		conn.run(channels),
+		scalp_periodic(),
+	))
+	loop.close()
 
 	# we will need to run the periodic check function with this run Function
 	# conn.run([
