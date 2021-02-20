@@ -42,7 +42,7 @@ class StreamConn(object):
 			asyncio.set_event_loop(self.loop)
 
 	async def connect(self):
-		print('connecting to polygon')
+		# print('connecting to polygon')
 		await self._dispatch({
 			'ev': 'status',
 			'status': 'connecting',
@@ -122,7 +122,7 @@ class StreamConn(object):
 		# if (self._stream):
 		async for data in self._stream:
 			stream = data.get('ev')
-			print('consuming message in polygon')
+			# print('consuming message in polygon')
 			if stream:
 				await self._dispatch(data)
 			elif data.get('status') == 'disconnected':
