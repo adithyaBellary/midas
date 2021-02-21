@@ -1,3 +1,4 @@
+import logging
 import os
 from typing import List
 import requests
@@ -32,6 +33,7 @@ from .entity import (
 
 from . import polygon
 
+logger = logging.getLogger(__name__)
 Positions = List[Position]
 Orders = List[Order]
 Assets = List[Asset]

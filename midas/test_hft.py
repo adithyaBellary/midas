@@ -84,23 +84,23 @@ def run():
 		if symbol in scalp_algos:
 			scalp_algos[symbol].on_order_update(data.event, data.order)
 
-	# @conn.on(r'^status')
-	# async def on_status(conn, channel, data):
-		# print('channel: {}, data: {}'.format(channel, data))
+	@conn.on(r'^status')
+	async def on_status(conn, channel, data):
+		print('channel: {}, data: {}'.format(channel, data))
 
 	async def scalp_periodic():
 		while True:
-			# if not api.get_clock().is_open:
+			if not api.get_clock().is_open:
 				# here is where we should sleep until the next market open
-				# print('we not open, waiting 1')
-				# await asyncio.sleep(1)
+				print('we not open, waiting 1')
+				await asyncio.sleep(10)
 				# logger.info('exit as market is not open')
 				# sys.exit(0)
 
-			print('checking up')
-			# await asyncio.sleep(3)
+			# print('checking up')
+			await asyncio.sleep(15)
 			positions = api.list_positions()
-			print('positions', [p._raw for p in positions])
+			# print('positions', [p._raw for p in positions])
 			for symbol, algo in scalp_algos.items():
 				pos = [p for p in positions if p.symbol == symbol]
 				algo.checkup(pos[0] if len(pos) > 0 else None)
@@ -110,8 +110,9 @@ def run():
 	# need to rethink how this runs
 	loop = conn.loop
 	loop.run_until_complete(asyncio.gather(
-		conn.subscribe(channels),
+		# we dont want to call the run signal here because that will block the CPU
 		# conn.run(channels),
+		conn.subscribe(channels),
 		scalp_periodic(),
 	))
 	loop.close()

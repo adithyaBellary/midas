@@ -126,6 +126,9 @@ class ScalpModel(object):
 			self._cancel_order()
 
 		if self._position is not None and self._outOfMarket():
+			print('selling in the checkup', self._symbol)
+			print('the position:', self._position._raw)
+			print('state', self._state)
 			self._submit_sell(bailout=True)
 
 	def _cancel_order(self):
