@@ -382,6 +382,8 @@ class REST(object):
 	def list_positions(self) -> Positions:
 		"""Get a list of open positions"""
 		resp = self.get('/positions')
+		# print('resp in list', resp)
+		# print('test position', Position(resp[0]))
 		return [Position(o) for o in resp]
 
 	def get_position(self, symbol: str) -> Position:

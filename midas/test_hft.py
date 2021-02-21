@@ -90,14 +90,17 @@ def run():
 
 	async def scalp_periodic():
 		while True:
-			if not api.get_clock().is_open:
-				print('we not open')
-				logger.info('exit as market is not open')
-				sys.exit(0)
+			# if not api.get_clock().is_open:
+				# here is where we should sleep until the next market open
+				# print('we not open, waiting 1')
+				# await asyncio.sleep(1)
+				# logger.info('exit as market is not open')
+				# sys.exit(0)
 
 			print('checking up')
-			await asyncio.sleep(30)
+			# await asyncio.sleep(3)
 			positions = api.list_positions()
+			print('positions', [p._raw for p in positions])
 			for symbol, algo in scalp_algos.items():
 				pos = [p for p in positions if p.symbol == symbol]
 				algo.checkup(pos[0] if len(pos) > 0 else None)
