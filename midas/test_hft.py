@@ -8,9 +8,9 @@ from dotenv import load_dotenv, find_dotenv
 import sys
 import os
 
-import services.alpaca_trade_api as tradeapi
-import tradeModels.scalping as scalpModel
-from tradeModels.scalping.typedefs import BarTick
+from services import alpaca_trade_api as tradeapi
+# import tradeModels.scalping as scalpModel
+from tradeModels import ScalpModel as scalpModel
 
 load_dotenv(find_dotenv())
 
