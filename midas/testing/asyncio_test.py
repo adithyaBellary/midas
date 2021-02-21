@@ -13,25 +13,40 @@ async def new_periodic():
     print('new periodic')
     await asyncio.sleep(5)
 
-async def n():
+# async def n():
+#   while True:
+#     print('we are in the added function')
+#     await asyncio.sleep(1)
+
+# def add_new_periodic():
+#   loop = asyncio.get_event_loop()
+#   loop.run_until_complete(asyncio.gather(
+#     n()
+#   ))
+
+async def coro():
   while True:
-    print('we are in the added function')
-    await asyncio.sleep(1)
+    await asyncio.sleep(3)
+    print('in the coro, slept for 3')
 
-def add_new_periodic():
-  loop = asyncio.get_event_loop()
-  loop.run_until_complete(asyncio.gather(
-    n()
-  ))
+# async def coro_wrapper():
+#   await coro()
 
-def main():
+async def main():
   print('in main()')
   loop = asyncio.get_event_loop()
-  loop.run_until_complete(asyncio.gather(
-    periodic(),
-    new_periodic(),
-    add_new_periodic()
-  ))
+  task = asyncio.ensure_future(coro())
+  # loop.run_until_complete(asyncio.gather(
+  #   task()
+  # ))
+  # await task
+  print('done w the task')
+  # loop.run_until_complete(asyncio.gather(
+  #   periodic(),
+  #   new_periodic()
+  # ))
+
 
 if __name__ == '__main__':
-  main()
+  # main()
+  asyncio.run(main())

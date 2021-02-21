@@ -124,6 +124,7 @@ class StreamConn(object):
 			stream = data.get('ev')
 			# print('consuming message in polygon')
 			if stream:
+        print('dispatching in polygon')
 				await self._dispatch(data)
 			elif data.get('status') == 'disconnected':
 				# Polygon returns this on an empty 'ev' id..

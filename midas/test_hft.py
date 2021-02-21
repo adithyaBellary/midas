@@ -86,7 +86,9 @@ def run():
 
 	@conn.on(r'^status')
 	async def on_status(conn, channel, data):
-		print('channel: {}, data: {}'.format(channel, data))
+		# print('channel: {}, data: {}'.format(channel, data))
+		print('channel')
+		# pass
 
 	async def scalp_periodic():
 		while True:
@@ -107,11 +109,11 @@ def run():
 
 	channels = ['trade_updates'] + ['AM.' + symbol for symbol in symbols]
 
+	# conn.run(channels)
 	# need to rethink how this runs
 	loop = conn.loop
 	loop.run_until_complete(asyncio.gather(
-		# we dont want to call the run signal here because that will block the CPU
-		# conn.run(channels),
+		# need to make sure that just subscribing to the channels actually consumes the messages from the ws
 		conn.subscribe(channels),
 		scalp_periodic(),
 	))
