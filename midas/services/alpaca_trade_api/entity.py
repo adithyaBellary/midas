@@ -75,6 +75,9 @@ class Position(Entity):
 	https://alpaca.markets/docs/api-documentation/api-v2/positions/#position-entity
 	"""
 	pass
+	# def __init__(self, raw):
+		# super().__init__(raw)
+		# self.raw = raw
 
 class AccountActivity(Entity):
 	"""

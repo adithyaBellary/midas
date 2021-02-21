@@ -69,6 +69,7 @@ class _StreamConn(object):
 
 	async def _consume_msg(self):
 		ws = self._ws
+		print('consume msg in alpaca got called')
 		try:
 			# wonder what happens when we take away this while loop?
 			while True:
@@ -156,6 +157,7 @@ class _StreamConn(object):
 		return Entity(msg)
 
 	async def _dispatch(self, channel, msg):
+		print('dispatching')
 		for pat, handler in self._handlers.items():
 			if pat.match(channel):
 				ent = self._cast(channel, msg['data'])

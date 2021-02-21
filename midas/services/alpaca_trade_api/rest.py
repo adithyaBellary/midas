@@ -1,3 +1,4 @@
+import logging
 import os
 from typing import List
 import requests
@@ -32,6 +33,7 @@ from .entity import (
 
 from . import polygon
 
+logger = logging.getLogger(__name__)
 Positions = List[Position]
 Orders = List[Order]
 Assets = List[Asset]
@@ -382,6 +384,8 @@ class REST(object):
 	def list_positions(self) -> Positions:
 		"""Get a list of open positions"""
 		resp = self.get('/positions')
+		# print('resp in list', resp)
+		# print('test position', Position(resp[0]))
 		return [Position(o) for o in resp]
 
 	def get_position(self, symbol: str) -> Position:

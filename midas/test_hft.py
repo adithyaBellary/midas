@@ -9,6 +9,9 @@ import sys
 import os
 
 import services.alpaca_trade_api as tradeapi
+import tradeModels.scalping as scalpModel
+from tradeModels.scalping.typedefs import BarTick
+
 load_dotenv(find_dotenv())
 
 KEY_ID = os.environ.get('KEY_ID')
@@ -48,9 +51,20 @@ def run():
 	# track our buying power
 	account = api.get_account()
 
+	# hardcoding the stocks of interesst might not be the best way forward
+	symbols = ['NIO', 'AAPL', 'MSFT']
+	scalp_algos = {}
+	lot = 10
+
+	for sym in symbols:
+		scalp_algos[sym] = scalpModel.ScalpModel(sym, api, lot)
+
+
 	@conn.on(r'^AM')
 	async def on_AM(conn, channel, data):
-		print('in AM ', data)
+		# print('in AM ', data)
+		if data.symbol in scalp_algos:
+			scalp_algos[data.symbol].on_bar(data)
 
 	@conn.on(r'^A$')
 	async def on_A(conn, channel, data):
@@ -64,26 +78,55 @@ def run():
 	async def on_trade_updates(conn, channel, data):
 		# We got an update on one of the orders we submitted. We need to
 		# update our position with the new information.
-		print('in on_trade_updates ', data)
+		# print('in on_trade_updates ', data)
+		logger.info(f'trade_updates {data}')
+		symbol = data.order['symbol']
+		if symbol in scalp_algos:
+			scalp_algos[symbol].on_order_update(data.event, data.order)
 
 	@conn.on(r'^status')
 	async def on_status(conn, channel, data):
-		print('channel: {}, data: {}'.format(channel, data))
+		# print('channel: {}, data: {}'.format(channel, data))
+		print('channel')
+		# pass
 
-	@conn.on(r'^time')
-	async def on_time(conn, channel, data):
-		pass
-		# handler for time updates:
-			# like when market is about to open
-			# when market is about to close
+	async def scalp_periodic():
+		while True:
+			if not api.get_clock().is_open:
+				# here is where we should sleep until the next market open
+				print('we not open, waiting 1')
+				await asyncio.sleep(10)
+				# logger.info('exit as market is not open')
+				# sys.exit(0)
 
-	conn.run([
-		'A.AAPL',
-		# 'AM.AAPL',
-		# 'AM.*',
-		'trade_updates',
-		'account_updates'
-	])
+			# print('checking up')
+			await asyncio.sleep(15)
+			positions = api.list_positions()
+			# print('positions', [p._raw for p in positions])
+			for symbol, algo in scalp_algos.items():
+				pos = [p for p in positions if p.symbol == symbol]
+				algo.checkup(pos[0] if len(pos) > 0 else None)
+
+	channels = ['trade_updates'] + ['AM.' + symbol for symbol in symbols]
+
+	# conn.run(channels)
+	# need to rethink how this runs
+	loop = conn.loop
+	loop.run_until_complete(asyncio.gather(
+		# need to make sure that just subscribing to the channels actually consumes the messages from the ws
+		conn.subscribe(channels),
+		scalp_periodic(),
+	))
+	loop.close()
+
+	# we will need to run the periodic check function with this run Function
+	# conn.run([
+	# 	'A.AAPL',
+	# 	# 'AM.AAPL',
+	# 	# 'AM.*',
+	# 	'trade_updates',
+	# 	'account_updates'
+	# ])
 
 def run_hft():
 	run()
