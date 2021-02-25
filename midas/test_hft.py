@@ -50,7 +50,17 @@ def run():
 	)
 	# track our buying power
 	account = api.get_account()
-
+	data = api.polygon.historic_agg_v2(
+		'AAPL',
+		1,
+		'minute',
+		'2021-02-01',
+		'2021-02-01',
+		unadjusted=False,
+		limit=50000
+		).df
+	data.to_csv('test.csv')
+	print('test data', data.head())
 	# hardcoding the stocks of interesst might not be the best way forward
 	symbols = ['NIO', 'AAPL', 'MSFT']
 	scalp_algos = {}
@@ -59,10 +69,9 @@ def run():
 	for sym in symbols:
 		scalp_algos[sym] = scalpModel.ScalpModel(sym, api, lot)
 
-
 	@conn.on(r'^AM')
 	async def on_AM(conn, channel, data):
-		# print('in AM ', data)
+		print('in AM ', data.symbol)
 		if data.symbol in scalp_algos:
 			scalp_algos[data.symbol].on_bar(data)
 

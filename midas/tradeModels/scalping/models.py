@@ -31,8 +31,8 @@ class ScalpModel(object):
 
 		# check if the market is open
 		clock = self._api.get_clock()
-		print('open', clock.next_open)
-		print('close', clock.next_close)
+		# print('open', clock.next_open)
+		# print('close', clock.next_close)
 		now = self._now().strftime('%Y-%m-%d %H:%M')
 		market_open = datetime.fromisoformat(now).replace(hour=9, minute=30)
 		today = self._now(format=True)
@@ -56,8 +56,8 @@ class ScalpModel(object):
 		# still have to figure out how to do this correctly
 		# bars = data[market_open:]
 		# self._bars = bars
-		print('data', data)
-		print('market_open', market_open)
+		# print('data', data)
+		# print('market_open', market_open)
 		# print('data (sliced', data[market_open:])
 
 		# close at 3:50

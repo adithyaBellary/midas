@@ -5,7 +5,7 @@ import sys
 from dotenv import load_dotenv, find_dotenv
 import threading
 
-import services.alpaca_trade_api as my_alpaca
+# import services.alpaca_trade_api as my_alpaca
 
 from test_hft import run_hft
 
@@ -13,26 +13,26 @@ def main():
   """Run administrative tasks."""
   os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'midas.settings')
   # load env vars
-  load_dotenv(find_dotenv())
+  # load_dotenv(find_dotenv())
 
-  key_id = ''
-  secret_key = ''
-  base_url = ''
+  # key_id = ''
+  # secret_key = ''
+  # base_url = ''
 
-  if os.environ.get('DEBUG') == 'TRUE':
-    key_id = os.environ.get('PAPER_KEY_ID')
-    secret_key = os.environ.get('PAPER_SECRET_KEY')
-    base_url = os.environ.get('PAPER_URL')
-  else:
-    key_id = os.environ.get('KEY_ID')
-    secret_key = os.environ.get('ALPACA_SECRET_KEY')
-    base_url = os.environ.get('URL')
+  # if os.environ.get('DEBUG') == 'TRUE':
+  #   key_id = os.environ.get('PAPER_KEY_ID')
+  #   secret_key = os.environ.get('PAPER_SECRET_KEY')
+  #   base_url = os.environ.get('PAPER_URL')
+  # else:
+  #   key_id = os.environ.get('KEY_ID')
+  #   secret_key = os.environ.get('ALPACA_SECRET_KEY')
+  #   base_url = os.environ.get('URL')
 
-  api = my_alpaca.REST(
-    key_id=key_id,
-    secret_key=secret_key,
-    base_url=base_url
-  )
+  # api = my_alpaca.REST(
+  #   key_id=key_id,
+  #   secret_key=secret_key,
+  #   base_url=base_url
+  # )
 
   # account = api.get_account()
   # buying_power = account.buying_power
