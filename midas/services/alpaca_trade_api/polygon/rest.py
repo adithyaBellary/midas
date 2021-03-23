@@ -219,6 +219,8 @@ class REST(object):
 		params = {'unadjusted': unadjusted}
 		if limit:
 			params['limit'] = limit
+		print('path', path)
+		print('params', params)
 		raw = self.get(path, params, version='v2')
 
 		return Aggsv2(raw)

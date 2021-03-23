@@ -31,13 +31,14 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+  'tradeEngine.apps.TradeengineConfig',
+  'tradeEngine.models.TestTrade',
   'django.contrib.admin',
   'django.contrib.auth',
   'django.contrib.contenttypes',
   'django.contrib.sessions',
   'django.contrib.messages',
   'django.contrib.staticfiles',
-  'tradeEngine.apps.TradeengineConfig',
   'ariadne.contrib.django',
   'corsheaders',
 ]
