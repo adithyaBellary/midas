@@ -4,14 +4,18 @@ import os
 import sys
 from dotenv import load_dotenv, find_dotenv
 import threading
+import django
 
 # import services.alpaca_trade_api as my_alpaca
 
 from test_hft import run_hft
 
+load_dotenv(find_dotenv())
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'midas.settings')
+
 def main():
   """Run administrative tasks."""
-  os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'midas.settings')
+  # django.setup()
   # load env vars
   # load_dotenv(find_dotenv())
 

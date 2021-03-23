@@ -4,11 +4,21 @@ import time as pytime
 from typing import List
 import logging
 from pytz import timezone
+import django
+import os
+from dotenv import load_dotenv, find_dotenv
 
 from .typedefs import BarTick
 
 logger = logging.getLogger()
 ESTtz = timezone('EST')
+
+load_dotenv(find_dotenv())
+# os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'midas.settings')
+# need the django setup before we can access the models
+django.setup()
+
+from tradeEngine.models import TestTrade
 
 class ScalpModel(object):
 	def __init__(
@@ -42,7 +52,7 @@ class ScalpModel(object):
 		# print('tomorrow', tomorrow)
 
 		# what if data gives us an empty data frame? like when starting this on the weekend or after market close
-		data = api.polygon.historic_agg_v2(self._symbol, 1, 'minute', today, tomorrow, unadjusted=False).df
+		# data = api.polygon.historic_agg_v2(self._symbol, 1, 'minute', today, tomorrow, unadjusted=False).df
 		_from = datetime.fromisoformat('2020-12-22').strftime('%Y-%m-%d')
 		to = datetime.fromisoformat('2020-12-23').strftime('%Y-%m-%d')
 		# data = api.polygon.historic_agg_v2(
@@ -62,6 +72,8 @@ class ScalpModel(object):
 
 		# close at 3:50
 		self._closing_time = time(15, 50)
+		# t = TestTrade.objects.get(pk=1)
+		# print('t', t)
 
 	def initialize_state(self):
 		symbol = self._symbol

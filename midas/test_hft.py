@@ -9,12 +9,14 @@ import sys
 import os
 import django
 
-from services import alpaca_trade_api as tradeapi
+# from services import alpaca_trade_api as tradeapi
+import alpaca_trade_api as tradeapi
 from tradeModels import ScalpModel as scalpModel
 
-django.setup()
+# need the django setup before we can access the models
+# django.setup()
 
-from tradeEngine.models import TestTrade
+# from tradeEngine.models import TestTrade
 
 load_dotenv(find_dotenv())
 
@@ -41,6 +43,8 @@ def run():
 		secret_key=secret_key,
 		base_url=url
 	)
+	d = api.get_aggs('AAPL', 1, 'minute', '2021-02-01', '2021-02-02').df
+	print('d', d.head())
 	polygon = api.polygon
 
 	# Establish streaming connection
@@ -57,22 +61,21 @@ def run():
 	buying_power = account.buying_power
 	# print(api.list_orders())
 	# print('buying power', buying_power)
-	t = TestTrade.objects.get(pk=1)
-	# t = tradeEngine.models.TestTrade
-	print('t', t)
+	# t = TestTrade.objects.get(pk=1)
+	# print('t', t)
 	# print(polygon.last_quote('AAPL'))
 
 	# getting a 401 (unauthorized error on this for some reason)
-	# data = polygon.historic_agg_v2(
-	# 	'AAPL',
-	# 	1,
-	# 	'minute',
-	# 	'2021-02-01',
-	# 	'2021-02-02',
-	# 	# unadjusted=False,
-	# 	# limit=5000
-	# 	).df
-	# data.to_csv('test.csv')
+	data = polygon.historic_agg_v2(
+		'AAPL',
+		1,
+		'minute',
+		'2021-02-01',
+		'2021-02-02',
+		# unadjusted=False,
+		# limit=5000
+		).df
+	data.to_csv('test.csv')
 	# print('test data', data.head())
 	# hardcoding the stocks of interesst might not be the best way forward
 	symbols = ['NIO', 'AAPL', 'MSFT']
@@ -81,6 +84,7 @@ def run():
 
 	for sym in symbols:
 		scalp_algos[sym] = scalpModel.ScalpModel(sym, api, lot)
+	# print('done setting up')
 
 	@conn.on(r'^AM')
 	async def on_AM(conn, channel, data):
