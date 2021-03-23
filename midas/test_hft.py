@@ -7,11 +7,14 @@ import threading
 from dotenv import load_dotenv, find_dotenv
 import sys
 import os
+import django
 
 from services import alpaca_trade_api as tradeapi
-# import tradeModels.scalping as scalpModel
 from tradeModels import ScalpModel as scalpModel
-import tradeEngine
+
+django.setup()
+
+from tradeEngine.models import TestTrade
 
 load_dotenv(find_dotenv())
 
@@ -54,8 +57,9 @@ def run():
 	buying_power = account.buying_power
 	# print(api.list_orders())
 	# print('buying power', buying_power)
-	# t = TestTrade.objects.get(pk=1)
-	# print('t', t)
+	t = TestTrade.objects.get(pk=1)
+	# t = tradeEngine.models.TestTrade
+	print('t', t)
 	# print(polygon.last_quote('AAPL'))
 
 	# getting a 401 (unauthorized error on this for some reason)
