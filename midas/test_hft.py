@@ -13,11 +13,6 @@ import django
 import alpaca_trade_api as tradeapi
 from tradeModels import ScalpModel as scalpModel
 
-# need the django setup before we can access the models
-# django.setup()
-
-# from tradeEngine.models import TestTrade
-
 load_dotenv(find_dotenv())
 
 KEY_ID = os.environ.get('KEY_ID')
@@ -41,11 +36,12 @@ def run():
 	api = tradeapi.REST(
 		key_id=key_id,
 		secret_key=secret_key,
-		base_url=url
+		base_url=url,
+    api_version= 'v2'
 	)
 	d = api.get_aggs('AAPL', 1, 'minute', '2021-02-01', '2021-02-02').df
 	print('d', d.head())
-	polygon = api.polygon
+	# polygon = api.polygon
 
 	# Establish streaming connection
 
