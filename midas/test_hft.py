@@ -39,8 +39,7 @@ def run():
 		base_url=url,
     api_version= 'v2'
 	)
-	d = api.get_aggs('AAPL', 1, 'minute', '2021-02-01', '2021-02-02').df
-	print('d', d.head())
+
 	# polygon = api.polygon
 
 	# Establish streaming connection
@@ -55,23 +54,10 @@ def run():
 	# track our buying power
 	account = api.get_account()
 	buying_power = account.buying_power
-	# print(api.list_orders())
-	# print('buying power', buying_power)
 	# t = TestTrade.objects.get(pk=1)
 	# print('t', t)
-	# print(polygon.last_quote('AAPL'))
 
-	# getting a 401 (unauthorized error on this for some reason)
-	data = polygon.historic_agg_v2(
-		'AAPL',
-		1,
-		'minute',
-		'2021-02-01',
-		'2021-02-02',
-		# unadjusted=False,
-		# limit=5000
-		).df
-	data.to_csv('test.csv')
+
 	# print('test data', data.head())
 	# hardcoding the stocks of interesst might not be the best way forward
 	symbols = ['NIO', 'AAPL', 'MSFT']

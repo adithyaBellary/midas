@@ -2,7 +2,7 @@ from dotenv import load_dotenv, find_dotenv
 from datetime import datetime, timedelta, date, time
 import os
 
-from .. import alpaca_trade_api as tradeapi
+import alpaca_trade_api as tradeapi
 
 load_dotenv(find_dotenv())
 
@@ -30,23 +30,13 @@ def generate():
   api = tradeapi.REST(
     key_id=key_id,
     secret_key=secret_key,
-    base_url=url
+    base_url=url,
+    api_version= 'v2'
   )
-  # polygon = api.polygon
-  account = api.get_account()
-  buying_power = account.buying_power
-  print('buying power', buying_power)
+
   symbols = ['AAPL']
 
-  # api = tradeapi.REST(
-  #   key_id=key_id,
-  #   secret_key=secret_key,
-  #   base_url=url
-  # )
-  # polygon = api.polygon
-
-  # before = '2020-01-04'
-  # now = '2021-01-04'
-  # data = polygon.historic_agg_v2(symbols[0], 1, 'minute', today, tomorrow, unadjusted=False).df
-  # print('data', data)
+  d = api.get_aggs('AAPL', 1, 'minute', '2021-02-01', '2021-02-02').df
+  print('d', d.head())
+  d.to_csv('test.csv')
 
