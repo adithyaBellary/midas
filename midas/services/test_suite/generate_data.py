@@ -44,5 +44,4 @@ def generate():
     '2021-02-02'
   ).df
 
-  print('d', d.head())
-  d.to_csv('test.csv')
+  d.to_csv('data/test.csv')

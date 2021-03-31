@@ -3,7 +3,7 @@ from datetime import datetime, timedelta, date, time
 
 DATA_LENGTH = 15
 ALLOW_IMPERFECT = False
-MODEL_DATA_FILENAME = 'model_data.csv'
+MODEL_DATA_FILENAME = 'data/model_data.csv'
 
 def get_day_from_date(d: str):
   d_iso = datetime.fromisoformat(d)
@@ -18,7 +18,7 @@ def get_time_from_date(d: str):
 
 def validate():
   d = []
-  with open('test.csv', newline='') as csvFile:
+  with open('data/test.csv', newline='') as csvFile:
     dataReader = csv.reader(csvFile, delimiter=',')
     for index, r in enumerate(dataReader):
       print('r', r)
