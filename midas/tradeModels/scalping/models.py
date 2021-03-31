@@ -52,12 +52,11 @@ class ScalpModel(object):
 		# print('tomorrow', tomorrow)
 
 		# what if data gives us an empty data frame? like when starting this on the weekend or after market close
-		# data = api.polygon.historic_agg_v2(self._symbol, 1, 'minute', today, tomorrow, unadjusted=False).df
 		_from = datetime.fromisoformat('2020-12-22').strftime('%Y-%m-%d')
 		to = datetime.fromisoformat('2020-12-23').strftime('%Y-%m-%d')
 
-    d = api.get_aggs('AAPL', 1, 'minute', '2021-02-01', '2021-02-02').df
-    print('d', d.head())
+		d = api.get_aggs('AAPL', 1, 'minute', '2021-02-01', '2021-02-02').df
+		print('d', d.head())
 
 
 		# still have to figure out how to do this correctly

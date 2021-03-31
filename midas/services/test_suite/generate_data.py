@@ -36,7 +36,13 @@ def generate():
 
   symbols = ['AAPL']
 
-  d = api.get_aggs('AAPL', 1, 'minute', '2021-02-01', '2021-02-02').df
+  d = api.get_aggs(
+    'AAPL',
+    1,
+    'minute',
+    '2021-02-01',
+    '2021-02-02'
+  ).df
+
   print('d', d.head())
   d.to_csv('test.csv')
-
