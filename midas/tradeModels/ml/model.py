@@ -4,15 +4,15 @@ import torch.nn as torch_nn
 import torch.nn.functional as F
 import torch.optim as optim
 
-# date of week, open, close, high, low, volume
+# date of week, hour  open, close, high, low, volume
 # let us encode day of week to be 1-5 (number)
-INPUT_DIM = 6
+INPUT_DIM = 7
 # what are we predicting?
 # open, high, low, close
 # date and volume will just be inputs to these predictions
 OUTPUT_DIM = 4
-# based on 15 minutes, we will make a prediction
-INPUT_DATA_CHUNK_SIZE = 15
+# based on this many number of minutes, we will make a prediction
+INPUT_DATA_CHUNK_SIZE = 20
 
 class StockLSTM(torch_nn.Module):
   def __init__(self, input_dimension, output_dimension, hidden_dimension):
