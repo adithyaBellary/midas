@@ -15,12 +15,14 @@ OUTPUT_DIM = 4
 INPUT_DATA_CHUNK_SIZE = 20
 
 class StockLSTM(torch_nn.Module):
-  def __init__(self, input_dimension, output_dimension, num_layers, hidden_dimension):
+  def __init__(self, input_dimension, hidden_dimension, output_dimension, num_layers = 0 ):
     super(StockLSTM, self).__init__()
     self.input_dimension = input_dimension
     self.output_dimension = output_dimension
     self.hidden_dimension = hidden_dimension
     self.num_layers = num_layers
+    # self.h0 = h0
+    # self.c0 = c0
 
     self.lstm = torch_nn.LSTM(self.input_dimension, self.hidden_dimension, self.num_layers)
 
@@ -28,7 +30,7 @@ class StockLSTM(torch_nn.Module):
 
   def forward(self, x):
     print('x', x)
-    out = self.lstm(x)
+    out, _ = self.lstm(x)
     print('out', out)
     output = self.hidden_to_output(out)
     print('output', output)
@@ -36,5 +38,3 @@ class StockLSTM(torch_nn.Module):
     # use  F.log_softmax(tag_space, dim=1) to convert scores -> probability (normalized to 1)
 
 loss_function = torch_nn.MSELoss()
-# optimizer = optim.SGD(model.parameters(), lr=0.1)
-
