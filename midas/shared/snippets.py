@@ -1,3 +1,4 @@
+django.setup()
 from tradeEngine.models import TestTrade
 # interacting w mongoDB
 # test_trade = TestTrade()

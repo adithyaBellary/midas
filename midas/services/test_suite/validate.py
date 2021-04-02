@@ -1,46 +1,51 @@
 import csv
 from datetime import datetime, timedelta, date, time
+import pandas as pd
+
+HIGH = 'high'
+LOW = 'low'
+OPEN = 'open'
+CLOSE = 'close'
+VOLUME = 'volume'
+DAY = 'day'
+HOUR = 'hour'
 
 DATA_LENGTH = 15
 ALLOW_IMPERFECT = False
 MODEL_DATA_FILENAME = 'data/model_data.csv'
 
-def get_day_from_date(d: str):
+def get_day_from_date(d: str) -> str:
   d_iso = datetime.fromisoformat(d)
+  weekday = d_iso.isoweekday()
+  return str(weekday)
 
-  return d_iso.isoweekday()
-
-def get_time_from_date(d: str):
+def get_hour_from_date(d: str) -> str:
   d_iso = datetime.fromisoformat(d)
   hour = d_iso.hour
 
-  return hour
+  return str(hour)
+
+def treat_row(row: object) -> object:
+  return {
+    OPEN: row.open,
+    CLOSE: row.close,
+    HIGH: row.high,
+    LOW:  row.low,
+    VOLUME: row.volume,
+    DAY: get_day_from_date(row.timestamp),
+    HOUR: get_hour_from_date(row.timestamp)
+  }
 
 def validate():
-  d = []
-  with open('data/test.csv', newline='') as csvFile:
-    dataReader = csv.reader(csvFile, delimiter=',')
-    for index, r in enumerate(dataReader):
-      print('r', r)
-      if index != 0:
-        # we do not want to add the header row to the data array
-        d.append(r)
+  # d = []
+  csv_data = pd.read_csv('data/test.csv')
+  # print('csv data', csv_data.iloc[0])
+  # print(csv_data.iloc[0].high)
+  # print(treat_row(csv_data.iloc[0]))
 
-  treated_data = []
-  for row in d:
-    a = []
-    for index, val in enumerate(row):
-      if index == 0:
-        a.append(get_day_from_date(val))
-        a.append(get_time_from_date(val))
-      else:
-        a.append(float(val))
-
-    treated_data.append(a)
-
-  with open(MODEL_DATA_FILENAME, 'w', newline='') as csvFile:
-    data_writer = csv.writer(csvFile, delimiter=',', quoting=csv.QUOTE_MINIMAL)
-    for row in treated_data:
-      data_writer.writerow(row)
-
-
+  treated_df = pd.DataFrame(
+    [treat_row(csv_data.iloc[i]) for i in range(len(csv_data))],
+    columns=[OPEN, CLOSE, HIGH, LOW, VOLUME, DAY, HOUR]
+  )
+  print(treated_df.head())
+  treated_df.to_csv(MODEL_DATA_FILENAME)

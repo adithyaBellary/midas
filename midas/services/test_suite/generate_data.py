@@ -3,6 +3,7 @@ from datetime import datetime, timedelta, date, time
 import os
 
 import alpaca_trade_api as tradeapi
+from alpaca_trade_api.rest import TimeFrame
 
 load_dotenv(find_dotenv())
 
@@ -14,6 +15,7 @@ PAPER_KEY_ID = os.environ.get('PAPER_KEY_ID')
 PAPER_SECRET_KEY = os.environ.get('PAPER_SECRET_KEY')
 PAPER_URL = os.environ.get('PAPER_URL')
 
+LIMIT = 100
 def generate():
 
   print('generating')
@@ -41,7 +43,16 @@ def generate():
     1,
     'minute',
     '2021-02-01',
-    '2021-02-02'
+    '2021-02-03'
   ).df
 
-  d.to_csv('data/test.csv')
+  d_bars = api.get_bars(
+    'AAPL',
+    TimeFrame.Minute,
+    '2021-02-01',
+    '2021-02-03',
+    limit=LIMIT,
+    adjustment='raw'
+  ).df
+
+  d_bars.to_csv('data/test.csv')
