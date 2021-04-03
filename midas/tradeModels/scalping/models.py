@@ -56,7 +56,7 @@ class ScalpModel(object):
 		to = datetime.fromisoformat('2020-12-23').strftime('%Y-%m-%d')
 
 		d = api.get_aggs('AAPL', 1, 'minute', '2021-02-01', '2021-02-02').df
-		print('d', d.head())
+		# print('d', d.head())
 
 
 		# still have to figure out how to do this correctly

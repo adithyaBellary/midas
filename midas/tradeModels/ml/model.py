@@ -24,7 +24,7 @@ class StockLSTM(torch_nn.Module):
     # self.h0 = h0
     # self.c0 = c0
 
-    self.lstm = torch_nn.LSTM(self.input_dimension, self.hidden_dimension, self.num_layers)
+    self.lstm = torch_nn.GRU(self.input_dimension, self.hidden_dimension, self.num_layers)
 
     self.hidden_to_output = torch_nn.Linear(self.hidden_dimension, self.output_dimension)
 
@@ -32,8 +32,10 @@ class StockLSTM(torch_nn.Module):
     print('x', x)
     out, _ = self.lstm(x)
     print('out', out)
-    output = self.hidden_to_output(out)
+    out = self.hidden_to_output(out[:, -1, :])
     print('output', output)
+
+    return out
 
     # use  F.log_softmax(tag_space, dim=1) to convert scores -> probability (normalized to 1)
 

@@ -2,10 +2,11 @@ import django
 import torch
 import torch.nn as torch_nn
 import torch.optim as optim
+from torch.utils.data import Dataset, DataLoader
 
 from services import test_suite
 from tradeModels import MLModel as model
-# from tradeModels import StockDataset as dataset
+from tradeModels.ml import StockDataset
 
 django.setup()
 from tradeEngine.models import TestTrade
@@ -30,23 +31,45 @@ def main():
   layers = 2
   # StockMLModel = model()
   # optimizer = model.optimizer
-  lstm = torch_nn.LSTM(input_dimension, hidden_dimension)
+  # lets use GRU over LSTM
+  lstm = torch_nn.GRU(input_dimension, hidden_dimension, 2)
   # seq_len, batch, input_size
-  _input = torch.randn(1, batch_size, input_dimension)
+  _input = torch.randn(batch_size, 1, input_dimension)
   linear = torch_nn.Linear(hidden_dimension, output_dimension)
-  # print('input', _input.size())
+  print('input', _input.size())
 
   out, (h, c) = lstm(_input)
   print('lstm out size', out.size())
   # print(h.size())
   # print(c.size())
   # out_linear = linear(out.view(batch_size, output_dimension))
-  print(out[-1, :, :].size())
-  out_linear = linear(out[:, -1, :])
-  print('out linear size', out_linear.size())
+  t = torch.Tensor([[1,2,3], [4,5,6]])
+  # print('t', t)
+  # print('t', t[-1,:])
+  # print(out[-1, :, :].size())
+  out_linear = linear(out[-1, :, :])
+  # print('out linear size', out_linear.size())
   # for _ in range(EPOCHS):
   #   pass
   # train that bad boy
+  stocks = StockDataset(csv_file='data/model_data.csv')
+  # print('0th', stocks[0])
+
+  # for i in range(len(stocks)):
+  #   print(stocks[i])
+
+  dataloader = DataLoader(
+    stocks,
+    batch_size=1,
+    shuffle=True,
+    num_workers=0,
+    drop_last=True
+  )
+  print('len of dataloader', len(dataloader))
+
+  for i, batch in enumerate(dataloader):
+    print('i', i)
+    # print('batch', batch)
 
 
 

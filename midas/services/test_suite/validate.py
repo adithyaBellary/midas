@@ -47,5 +47,5 @@ def validate():
     [treat_row(csv_data.iloc[i]) for i in range(len(csv_data))],
     columns=[OPEN, CLOSE, HIGH, LOW, VOLUME, DAY, HOUR]
   )
-  print(treated_df.head())
+  # print(treated_df.head())
   treated_df.to_csv(MODEL_DATA_FILENAME)

@@ -15,7 +15,7 @@ PAPER_KEY_ID = os.environ.get('PAPER_KEY_ID')
 PAPER_SECRET_KEY = os.environ.get('PAPER_SECRET_KEY')
 PAPER_URL = os.environ.get('PAPER_URL')
 
-LIMIT = 100
+LIMIT = 1000
 def generate():
 
   print('generating')
