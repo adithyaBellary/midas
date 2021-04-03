@@ -12,7 +12,7 @@ django.setup()
 from tradeEngine.models import TestTrade
 
 LEARNING_RATE = 0.1
-EPOCHS = 150
+EPOCHS = 200
 
 def main():
   test_suite.generate()
@@ -32,44 +32,7 @@ def main():
     output_dimension,
     layers
   )
-  # lets use GRU over LSTM
-  lstm = torch_nn.GRU(input_dimension, hidden_dimension, 2)
-  # seq_len, batch, input_size
-  _input = torch.randn(batch_size, 1, input_dimension)
-  linear = torch_nn.Linear(hidden_dimension, output_dimension)
-# <<<<<<< HEAD
-#   print('input', _input.size())
 
-#   out, (h, c) = lstm(_input)
-#   print('lstm out size', out.size())
-#   # print(h.size())
-#   # print(c.size())
-#   # out_linear = linear(out.view(batch_size, output_dimension))
-#   t = torch.Tensor([[1,2,3], [4,5,6]])
-#   # print('t', t)
-#   # print('t', t[-1,:])
-#   # print(out[-1, :, :].size())
-#   out_linear = linear(out[-1, :, :])
-#   # print('out linear size', out_linear.size())
-#   # for _ in range(EPOCHS):
-#   #   pass
-#   # train that bad boy
-#   stocks = StockDataset(csv_file='data/model_data.csv')
-#   # print('0th', stocks[0])
-
-#   # for i in range(len(stocks)):
-#   #   print(stocks[i])
-
-#   dataloader = DataLoader(
-#     stocks,
-#     batch_size=1,
-# =======
-
-
-  # out, (h, c) = lstm(_input)
-
-  # t = torch.Tensor([[1,2,3], [4,5,6]])
-  # out_linear = linear(out[-1, :, :])
 
   stocks = StockDataset(csv_file='data/model_data.csv')
 
@@ -85,25 +48,21 @@ def main():
   optimizer = optim.Adam(StockMLModel.parameters(), lr=LEARNING_RATE)
 
   losses = []
-  # print('len of dataloader', len(dataloader))
   for e in range(EPOCHS):
+    batch_loss = 0
     for i, batch in enumerate(dataloader):
-      # print('i', i)
-      # if (i == 0):
-      #   print('batch', batch['data'].float())
-      #   print('batch', batch['label'].shape)
       out = StockMLModel(batch['data'].float())
       # print('out size', out.size())
       # print('label size', batch['label'].size())
-
+      # print('out', out)
+      # print('labels', batch['label'])
       loss = loss_function(out, batch['label'].float())
-      losses.append(loss)
-      loss.backward()
-      optimizer.step()
-      print(f'epoch: {e}, loss: {loss}')
+      batch_loss += loss
 
-    # step optimizer
-    # print loss and error at this time
+    losses.append(batch_loss)
+    batch_loss.backward()
+    optimizer.step()
+    print(f'epoch: {e}, loss: {batch_loss}')
 
 
 if __name__ == '__main__':
