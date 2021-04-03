@@ -21,19 +21,17 @@ class StockLSTM(torch_nn.Module):
     self.output_dimension = output_dimension
     self.hidden_dimension = hidden_dimension
     self.num_layers = num_layers
-    # self.h0 = h0
-    # self.c0 = c0
 
-    self.lstm = torch_nn.GRU(self.input_dimension, self.hidden_dimension, self.num_layers)
+    self.gru = torch_nn.GRU(self.input_dimension, self.hidden_dimension, self.num_layers)
 
     self.hidden_to_output = torch_nn.Linear(self.hidden_dimension, self.output_dimension)
 
   def forward(self, x):
-    print('x', x)
-    out, _ = self.lstm(x)
-    print('out', out)
+    # print('x', x)
+    out, _ = self.gru(x)
+    # print('out', out)
     out = self.hidden_to_output(out[:, -1, :])
-    print('output', output)
+    # print('output', output)
 
     return out
 
