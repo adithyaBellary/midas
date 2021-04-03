@@ -42,10 +42,9 @@ def validate():
   # print('csv data', csv_data.iloc[0])
   # print(csv_data.iloc[0].high)
   # print(treat_row(csv_data.iloc[0]))
-
   treated_df = pd.DataFrame(
     [treat_row(csv_data.iloc[i]) for i in range(len(csv_data))],
     columns=[OPEN, CLOSE, HIGH, LOW, VOLUME, DAY, HOUR]
   )
   # print(treated_df.head())
-  treated_df.to_csv(MODEL_DATA_FILENAME)
+  treated_df.to_csv(MODEL_DATA_FILENAME, index=False)
