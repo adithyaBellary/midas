@@ -11,6 +11,8 @@ import django
 
 # from services import alpaca_trade_api as tradeapi
 import alpaca_trade_api as tradeapi
+from alpaca_trade_api.common import URL as alpacaURL
+
 from tradeModels import ScalpModel as scalpModel
 
 load_dotenv(find_dotenv())
@@ -22,6 +24,12 @@ URL = os.environ.get('URL')
 PAPER_KEY_ID = os.environ.get('PAPER_KEY_ID')
 PAPER_SECRET_KEY = os.environ.get('PAPER_SECRET_KEY')
 PAPER_URL = os.environ.get('PAPER_URL')
+
+async def print_trade(t):
+	print('trade', t)
+
+async def print_quote(q):
+	print('quote', q)
 
 def run():
 	if os.environ.get('PAPER') == 'TRUE':
@@ -36,27 +44,41 @@ def run():
 	api = tradeapi.REST(
 		key_id=key_id,
 		secret_key=secret_key,
-		base_url=url,
-    api_version= 'v2'
+		base_url=alpacaURL(url),
+		api_version= 'v2'
 	)
-
-	# polygon = api.polygon
 
 	# Establish streaming connection
 
-	conn = tradeapi.StreamConn(
-		key_id=key_id,
-		secret_key=secret_key,
-		base_url=url,
-		data_stream='polygon',
-		debug=True
-	)
+	# conn = tradeapi.StreamConn(
+	# 	key_id=key_id,
+	# 	secret_key=secret_key,
+	# 	base_url=url,
+	# 	data_stream='polygon',
+	# 	debug=True
+	# )
 	# track our buying power
 	account = api.get_account()
 	buying_power = account.buying_power
+	print('buying power', buying_power)
 	# t = TestTrade.objects.get(pk=1)
 	# print('t', t)
 
+	feed = 'iex'
+	stream = tradeapi.Stream(
+		key_id=key_id,
+		secret_key=secret_key,
+		data_feed=feed,
+		base_url=alpacaURL(url),
+		raw_data=True
+	)
+
+	stream.subscribe_trades(print_trade, 'AAPL')
+	stream.subscribe_quotes(print_quote, 'SPOT')
+
+	@stream.on_bar('MSFT')
+	async def _(bar):
+		print('bar', bar)
 
 	# print('test data', data.head())
 	# hardcoding the stocks of interesst might not be the best way forward
@@ -68,35 +90,35 @@ def run():
 		scalp_algos[sym] = scalpModel.ScalpModel(sym, api, lot)
 	# print('done setting up')
 
-	@conn.on(r'^AM')
-	async def on_AM(conn, channel, data):
-		print('in AM ', data.symbol)
-		if data.symbol in scalp_algos:
-			scalp_algos[data.symbol].on_bar(data)
+	# @conn.on(r'^AM')
+	# async def on_AM(conn, channel, data):
+	# 	print('in AM ', data.symbol)
+	# 	if data.symbol in scalp_algos:
+	# 		scalp_algos[data.symbol].on_bar(data)
 
-	@conn.on(r'^A$')
-	async def on_A(conn, channel, data):
-		print('in A$')
+	# @conn.on(r'^A$')
+	# async def on_A(conn, channel, data):
+	# 	print('in A$')
 
-	@conn.on(r'^A')
-	async def on_A(conn, channel, data):
-		print('in A ')
+	# @conn.on(r'^A')
+	# async def on_A(conn, channel, data):
+	# 	print('in A ')
 
-	@conn.on(r'trade_updates')
-	async def on_trade_updates(conn, channel, data):
-		# We got an update on one of the orders we submitted. We need to
-		# update our position with the new information.
-		# print('in on_trade_updates ', data)
-		logger.info(f'trade_updates {data}')
-		symbol = data.order['symbol']
-		if symbol in scalp_algos:
-			scalp_algos[symbol].on_order_update(data.event, data.order)
+	# @conn.on(r'trade_updates')
+	# async def on_trade_updates(conn, channel, data):
+	# 	# We got an update on one of the orders we submitted. We need to
+	# 	# update our position with the new information.
+	# 	# print('in on_trade_updates ', data)
+	# 	logger.info(f'trade_updates {data}')
+	# 	symbol = data.order['symbol']
+	# 	if symbol in scalp_algos:
+	# 		scalp_algos[symbol].on_order_update(data.event, data.order)
 
-	@conn.on(r'^status')
-	async def on_status(conn, channel, data):
-		# print('channel: {}, data: {}'.format(channel, data))
-		print('channel')
-		# pass
+	# @conn.on(r'^status')
+	# async def on_status(conn, channel, data):
+	# 	# print('channel: {}, data: {}'.format(channel, data))
+	# 	print('channel')
+	# 	# pass
 
 	async def scalp_periodic():
 		while True:
@@ -119,10 +141,13 @@ def run():
 
 	# conn.run(channels)
 	# need to rethink how this runs
-	loop = conn.loop
+	# loop = conn.loop
+	# loop = asyncio.get_event_loop()
+	loop = asyncio.new_event_loop()
 	loop.run_until_complete(asyncio.gather(
 		# need to make sure that just subscribing to the channels actually consumes the messages from the ws
-		conn.subscribe(channels),
+		# conn.subscribe(channels),
+		stream.run(),
 		scalp_periodic(),
 	))
 	loop.close()
