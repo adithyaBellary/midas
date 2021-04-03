@@ -27,11 +27,11 @@ def get_hour_from_date(d: str) -> str:
 
 def treat_row(row: object) -> object:
   return {
-    OPEN: row.open,
-    CLOSE: row.close,
-    HIGH: row.high,
-    LOW:  row.low,
-    VOLUME: row.volume,
+    OPEN: row.open / 100,
+    CLOSE: row.close / 100,
+    HIGH: row.high / 100,
+    LOW:  row.low / 100,
+    VOLUME: row.volume / 1000000,
     DAY: get_day_from_date(row.timestamp),
     HOUR: get_hour_from_date(row.timestamp)
   }
