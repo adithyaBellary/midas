@@ -11,7 +11,7 @@ from tradeModels.ml import StockLSTM as model
 django.setup()
 from tradeEngine.models import TestTrade
 
-LEARNING_RATE = 0.1
+LEARNING_RATE = 0.05
 EPOCHS = 200
 
 def main():
@@ -22,7 +22,7 @@ def main():
   input_dimension = 7
   output_dimension = 4
   # should hidden size be the same as the input dimension?
-  hidden_dimension = 50
+  hidden_dimension = 100
   batch_size = 20
   # do we really need mulitple layers?
   layers = 2
@@ -52,17 +52,14 @@ def main():
     batch_loss = 0
     for i, batch in enumerate(dataloader):
       out = StockMLModel(batch['data'].float())
-      # print('out size', out.size())
-      # print('label size', batch['label'].size())
-      # print('out', out)
-      # print('labels', batch['label'])
       loss = loss_function(out, batch['label'].float())
       batch_loss += loss
 
-    losses.append(batch_loss)
-    batch_loss.backward()
-    optimizer.step()
-    print(f'epoch: {e}, loss: {batch_loss}')
+      optimizer.zero_grad()
+      loss.backward()
+      optimizer.step()
+
+      print(f'epoch: {e}, loss: {loss}')
 
 
 if __name__ == '__main__':
