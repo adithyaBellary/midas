@@ -3,6 +3,7 @@ import torch
 import torch.nn as torch_nn
 import torch.optim as optim
 from torch.utils.data import Dataset, DataLoader
+import matplotlib.pyplot as plt
 
 from services import test_suite
 from tradeModels.ml import StockDataset
@@ -11,8 +12,8 @@ from tradeModels.ml import StockLSTM as model
 django.setup()
 from tradeEngine.models import TestTrade
 
-LEARNING_RATE = 0.05
-EPOCHS = 200
+LEARNING_RATE = 0.01
+EPOCHS = 50
 
 def main():
   test_suite.generate()
@@ -23,7 +24,7 @@ def main():
   output_dimension = 4
   # should hidden size be the same as the input dimension?
   hidden_dimension = 100
-  batch_size = 20
+  batch_size = 25
   # do we really need mulitple layers?
   layers = 2
   StockMLModel = model(
@@ -59,8 +60,19 @@ def main():
       loss.backward()
       optimizer.step()
 
-      print(f'epoch: {e}, loss: {loss}')
+      if (i % 200 == 0):
+        print(f'i: {i}, loss {loss}')
 
+
+    print(f'epoch: {e}, loss: {batch_loss}')
+
+    losses.append(batch_loss)
+
+  plt.plot(losses)
+  plt.ylabel('losses')
+  plt.xlabel('epoch')
+  plt.savefig(f'figures/loss_{EPOCHS}.png')
+  # plt.show()
 
 if __name__ == '__main__':
   main()

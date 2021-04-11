@@ -22,7 +22,12 @@ class StockLSTM(torch_nn.Module):
     self.hidden_dimension = hidden_dimension
     self.num_layers = num_layers
 
-    self.gru = torch_nn.GRU(self.input_dimension, self.hidden_dimension, self.num_layers)
+    self.gru = torch_nn.LSTM(
+      self.input_dimension,
+      self.hidden_dimension,
+      self.num_layers,
+      dropout=0.2
+    )
 
     self.hidden_to_output = torch_nn.Linear(self.hidden_dimension, self.output_dimension)
 
