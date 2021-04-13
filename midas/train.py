@@ -71,8 +71,13 @@ def main():
   plt.plot(losses)
   plt.ylabel('losses')
   plt.xlabel('epoch')
-  plt.savefig(f'figures/loss_{EPOCHS}.png')
+  FIGURE_NAME = f'figures/loss_{EPOCHS}.png'
+  plt.savefig(FIGURE_NAME)
   # plt.show()
+
+  # save the model
+  PATH = f'weights/model_{EPOCHS}.pt'
+  torch.save(StockMLModel, PATH)
 
 if __name__ == '__main__':
   main()

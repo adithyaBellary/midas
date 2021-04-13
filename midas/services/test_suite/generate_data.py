@@ -35,7 +35,7 @@ def generate():
     api_version= 'v2'
   )
 
-  for index, day in enumerate([datetime.today() - timedelta(days=x) for x in range(2,202)]):
+  for index, day in enumerate([datetime.today() - timedelta(days=x) for x in range(1,302)]):
 
     d_bars = api.get_bars(
       'AAPL',
