@@ -13,7 +13,7 @@ django.setup()
 from tradeEngine.models import TestTrade
 
 LEARNING_RATE = 0.01
-EPOCHS = 50
+EPOCHS = 40
 
 def main():
   test_suite.generate()
@@ -60,8 +60,8 @@ def main():
       loss.backward()
       optimizer.step()
 
-      if (i % 200 == 0):
-        print(f'i: {i}, loss {loss}')
+      if (i % 500 == 0):
+        print(f'i: {i}, epoch: {e}, loss {loss}')
 
 
     print(f'epoch: {e}, loss: {batch_loss}')
@@ -71,12 +71,13 @@ def main():
   plt.plot(losses)
   plt.ylabel('losses')
   plt.xlabel('epoch')
-  FIGURE_NAME = f'figures/loss_{EPOCHS}.png'
+  ID = '300_days_40_epochs'
+  FIGURE_NAME = f'figures/loss_{ID}.png'
   plt.savefig(FIGURE_NAME)
   # plt.show()
 
   # save the model
-  PATH = f'weights/model_{EPOCHS}.pt'
+  PATH = f'weights/model_{ID}.pt'
   torch.save(StockMLModel, PATH)
 
 if __name__ == '__main__':
