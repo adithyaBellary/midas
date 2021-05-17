@@ -15,6 +15,8 @@ OUTPUT_DIM = 4
 INPUT_DATA_CHUNK_SIZE = 20
 
 class StockLSTM(torch_nn.Module):
+  # this model predicts just one time step ahead
+  # i feel like we need more than that
   def __init__(self, input_dimension, hidden_dimension, output_dimension, num_layers = 0 ):
     super(StockLSTM, self).__init__()
     self.input_dimension = input_dimension

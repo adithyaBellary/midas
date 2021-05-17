@@ -17,7 +17,11 @@ PAPER_SECRET_KEY = os.environ.get('PAPER_SECRET_KEY')
 PAPER_URL = os.environ.get('PAPER_URL')
 
 LIMIT = 1000
-def generate():
+def generate(
+  stock: str,
+  file_name: str,
+  num_days: int
+):
   if os.environ.get('PAPER') == 'TRUE':
     key_id = PAPER_KEY_ID
     secret_key = PAPER_SECRET_KEY
@@ -32,13 +36,14 @@ def generate():
     key_id=key_id,
     secret_key=secret_key,
     base_url=url,
-    api_version= 'v2'
+    api_version='v2'
   )
 
-  for index, day in enumerate([datetime.today() - timedelta(days=x) for x in range(1,302)]):
+  for index, day in enumerate([datetime.today() - timedelta(days=x) for x in range(3,3 + num_days)]):
 
     d_bars = api.get_bars(
-      'AAPL',
+      # 'AAPL',
+      stock,
       TimeFrame.Minute,
       day.strftime("%Y-%m-%d"),
       day.strftime("%Y-%m-%d"),
@@ -46,4 +51,4 @@ def generate():
       adjustment='raw'
     ).df
 
-    d_bars.to_csv('data/test.csv', mode='a', header=index == 0)
+    d_bars.to_csv(f'data/{file_name}.csv', mode='a', header=index == 0)
