@@ -9,7 +9,7 @@ NUM_HIDDEN_FEATURES = 10
 NUM_LAYERS = 2
 NUM_PREDICTIONS = 3
 
-inputs = [torch.randn(2, 3).view(2,3,1) for _ in range(5)]
+inputs = [torch.randn(2, NUM_FEATURES).view(2,1,NUM_FEATURES) for _ in range(5)]
 
 class WordLSTM(torch_nn.Module):
   def __init__(self):
