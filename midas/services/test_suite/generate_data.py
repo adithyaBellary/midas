@@ -39,16 +39,27 @@ def generate(
     api_version='v2'
   )
 
-  for index, day in enumerate([datetime.today() - timedelta(days=x) for x in range(3,3 + num_days)]):
+  clock = api.get_clock()
+
+  today = datetime.today()
+
+  FRIDAY_DATE = 4
+  CURRENT_WEEKDAY = today.weekday()
+
+  OFFSET = 3
+  if not clock.is_open:
+    # find the last market open (the last friday for right now)
+    OFFSET = CURRENT_WEEKDAY - FRIDAY_DATE
+
+  for index, day in enumerate([datetime.today() - timedelta(days=x) for x in range(OFFSET,OFFSET + num_days)]):
 
     d_bars = api.get_bars(
-      # 'AAPL',
       stock,
       TimeFrame.Minute,
       day.strftime("%Y-%m-%d"),
       day.strftime("%Y-%m-%d"),
+      adjustment='raw',
       limit=LIMIT,
-      adjustment='raw'
     ).df
 
     d_bars.to_csv(f'data/{file_name}.csv', mode='a', header=index == 0)

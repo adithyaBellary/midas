@@ -15,8 +15,16 @@ from tradeEngine.models import TestTrade
 LEARNING_RATE = 0.01
 EPOCHS = 40
 
+STOCK = 'AAPL'
+FILE = 'new_lstm'
+NUM_DAYS_TRAINING_DATA = 200
+
 def main():
-  test_suite.generate()
+  test_suite.generate(
+    STOCK,
+    FILE,
+    NUM_DAYS_TRAINING_DATA,
+  )
   test_suite.validate()
   # t = TestTrade.objects.get(pk=1)
   # print('t', t)
@@ -27,10 +35,12 @@ def main():
   batch_size = 25
   # do we really need mulitple layers?
   layers = 2
+  prediction_timespan = 25
   StockMLModel = model(
     input_dimension,
     hidden_dimension,
     output_dimension,
+    prediction_timespan,
     layers
   )
 

@@ -17,25 +17,35 @@ INPUT_DATA_CHUNK_SIZE = 20
 class StockLSTM(torch_nn.Module):
   # this model predicts just one time step ahead
   # i feel like we need more than that
-  def __init__(self, input_dimension, hidden_dimension, output_dimension, num_layers = 0 ):
+  def __init__(self, input_dimension, hidden_dimension, output_dimension, prediction_timespan,  num_layers = 0 ):
     super(StockLSTM, self).__init__()
     self.input_dimension = input_dimension
     self.output_dimension = output_dimension
     self.hidden_dimension = hidden_dimension
     self.num_layers = num_layers
+    # how many timesteps will be fed in at one time
+    self.prediction_timespan = prediction_timespan
 
-    self.gru = torch_nn.LSTM(
+    self.lstm = torch_nn.LSTM(
       self.input_dimension,
       self.hidden_dimension,
       self.num_layers,
-      dropout=0.2
+      dropout=0.2,
+      proj_size=output_dimension
     )
 
-    self.hidden_to_output = torch_nn.Linear(self.hidden_dimension, self.output_dimension)
+    # self.hidden_to_output = torch_nn.Linear(self.hidden_dimension, self.output_dimension)
+
+    self.timespan_reduction = torch_nn.Linear(prediction_timespan, 1)
 
   def forward(self, x):
-    out, _ = self.gru(x)
-    out = self.hidden_to_output(out[:, -1, :])
+    out, _ = self.lstm(x)
+    # output will be [prediction_timespan, 1, output_dimension]
+    print('output size', out.size())
+    size = out.size()
+    out = torch.transpose(out.view())
+    out = self.timespan_reduction(out)
+    # out = self.hidden_to_output(out[:, -1, :])
 
     # use  F.log_softmax(tag_space, dim=1) to convert scores -> probability (normalized to 1)
     return out
