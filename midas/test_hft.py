@@ -1,3 +1,4 @@
+from alpaca_trade_api.stream import Stream
 import pandas as pd
 import numpy as np
 import time
@@ -29,6 +30,15 @@ async def print_trade(t):
 
 async def print_quote(q):
 	print('quote', q)
+
+async def on_bar(b):
+	print('bar', b)
+
+async def on_trade_update(tu):
+	print('on trade update', tu)
+
+async def on_status_update(su):
+	print('on status update', su)
 
 def run():
 	if os.environ.get('PAPER') == 'TRUE':
@@ -65,10 +75,9 @@ def run():
 
 	stream.subscribe_trades(print_trade, 'AAPL')
 	stream.subscribe_quotes(print_quote, 'SPOT')
-
-	@stream.on_bar('MSFT')
-	async def _(bar):
-		print('bar', bar)
+	stream.subscribe_bars(on_bar, 'AAPL')
+	stream.subscribe_trade_updates(on_trade_update)
+	stream.subscribe_statuses(on_status_update, 'AAPL')
 
 def run_hft():
 	run()
