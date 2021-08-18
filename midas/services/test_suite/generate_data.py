@@ -46,7 +46,7 @@ def generate(
   FRIDAY_DATE = 4
   CURRENT_WEEKDAY = today.weekday()
 
-  OFFSET = 3
+  OFFSET = 1
   if not clock.is_open:
     # find the last market open (the last friday for right now)
     OFFSET = CURRENT_WEEKDAY - FRIDAY_DATE

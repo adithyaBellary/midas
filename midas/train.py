@@ -4,6 +4,7 @@ import torch.nn as torch_nn
 import torch.optim as optim
 from torch.utils.data import Dataset, DataLoader
 import matplotlib.pyplot as plt
+import numpy as np
 
 from services import test_suite
 from tradeModels.ml import StockDataset
@@ -12,12 +13,27 @@ from tradeModels.ml import StockLSTM as model
 django.setup()
 from tradeEngine.models import TestTrade
 
+# t = TestTrade.objects.get(pk=1)
+# print('t', t)
+
 LEARNING_RATE = 0.01
 EPOCHS = 40
 
 STOCK = 'AAPL'
 FILE = 'new_lstm'
+MODEL_DATA_CSV = 'data/model_data.csv'
 NUM_DAYS_TRAINING_DATA = 200
+
+# need to move this to a config module
+# how many input features we will be having
+NUM_INPUT_FEATURES = 7
+# how many features are we predicting
+NUM_OUTPUT_FEATURES = 4
+HIDDEN_DIMENSION = 100
+INPUT_LENGTH = 25
+NUM_LAYERS = 2
+
+lookahead = 15
 
 def main():
   test_suite.generate(
@@ -25,33 +41,28 @@ def main():
     FILE,
     NUM_DAYS_TRAINING_DATA,
   )
-  test_suite.validate()
-  # t = TestTrade.objects.get(pk=1)
-  # print('t', t)
-  input_dimension = 7
-  output_dimension = 4
-  # should hidden size be the same as the input dimension?
-  hidden_dimension = 100
-  batch_size = 25
-  # do we really need mulitple layers?
-  layers = 2
-  prediction_timespan = 25
+  test_suite.validate(FILE)
+
   StockMLModel = model(
-    input_dimension,
-    hidden_dimension,
-    output_dimension,
-    prediction_timespan,
-    layers
+    NUM_INPUT_FEATURES,
+    HIDDEN_DIMENSION,
+    NUM_OUTPUT_FEATURES,
+    INPUT_LENGTH,
+    NUM_LAYERS
   )
 
-
-  stocks = StockDataset(csv_file='data/model_data.csv')
+  stocks = StockDataset(
+    MODEL_DATA_CSV,
+    INPUT_LENGTH,
+    lookahead
+  )
+  # print('stocks', np.array(stocks[0]['data']).shape)
 
   dataloader = DataLoader(
     stocks,
-    batch_size=4,
+    batch_size=1,
     shuffle=True,
-    num_workers=0,
+    num_workers=1,
     drop_last=True
   )
 

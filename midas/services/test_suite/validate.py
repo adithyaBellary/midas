@@ -27,18 +27,17 @@ def get_hour_from_date(d: str) -> str:
 
 def treat_row(row: object) -> object:
   return {
-    OPEN: row.open / 100,
-    CLOSE: row.close / 100,
-    HIGH: row.high / 100,
-    LOW:  row.low / 100,
-    VOLUME: row.volume / 1000000,
+    OPEN: float(row.open) / 100,
+    CLOSE: float(row.close) / 100,
+    HIGH: float(row.high) / 100,
+    LOW: float(row.low) / 100,
+    VOLUME: float(row.volume) / 1000000,
     DAY: get_day_from_date(row.timestamp),
     HOUR: get_hour_from_date(row.timestamp)
   }
 
-def validate():
-  # d = []
-  csv_data = pd.read_csv('data/test.csv')
+def validate(file_name: str):
+  csv_data = pd.read_csv(f'data/{file_name}.csv')
   # print('csv data', csv_data.iloc[0])
   # print(csv_data.iloc[0].high)
   # print(treat_row(csv_data.iloc[0]))
