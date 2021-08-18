@@ -48,11 +48,11 @@ def generate(
 
   OFFSET = 1
   if not clock.is_open:
-    # find the last market open (the last friday for right now)
-    OFFSET = CURRENT_WEEKDAY - FRIDAY_DATE
+    # if it is the weekend
+    if CURRENT_WEEKDAY == 5 or CURRENT_WEEKDAY == 6:
+      OFFSET = CURRENT_WEEKDAY - FRIDAY_DATE
 
   for index, day in enumerate([datetime.today() - timedelta(days=x) for x in range(OFFSET,OFFSET + num_days)]):
-
     d_bars = api.get_bars(
       stock,
       TimeFrame.Minute,
