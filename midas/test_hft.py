@@ -79,5 +79,13 @@ def run():
 	stream.subscribe_trade_updates(on_trade_update)
 	stream.subscribe_statuses(on_status_update, 'AAPL')
 
+	# stream.run()
+
 def run_hft():
 	run()
+
+def main():
+	run()
+
+if __name__ == '__main__':
+	main()
