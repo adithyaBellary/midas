@@ -6,13 +6,13 @@ import torch.optim as optim
 
 # date of week, hour  open, close, high, low, volume
 # let us encode day of week to be 1-5 (number)
-INPUT_DIM = 7
+# INPUT_DIM = 7
 # what are we predicting?
 # open, high, low, close
 # date and volume will just be inputs to these predictions
-OUTPUT_DIM = 4
+# OUTPUT_DIM = 4
 # based on this many number of minutes, we will make a prediction
-INPUT_DATA_CHUNK_SIZE = 20
+# INPUT_DATA_CHUNK_SIZE = 20
 
 class StockLSTM(torch_nn.Module):
   # this model predicts just one time step ahead

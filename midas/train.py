@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from services import test_suite
-from tradeModels.ml import StockDataset
+from tradeModels.ml import StockDataset, SeqDataset
 from tradeModels.ml import StockLSTM as model
 
 django.setup()
@@ -18,6 +18,7 @@ from tradeEngine.models import TestTrade
 
 LEARNING_RATE = 0.01
 EPOCHS = 40
+# EPOCHS = 0
 
 STOCK = 'AAPL'
 FILE = 'new_lstm'
@@ -41,7 +42,7 @@ def main():
     FILE,
     NUM_DAYS_TRAINING_DATA,
   )
-  test_suite.validate(FILE)
+  # test_suite.validate(FILE)
 
   StockMLModel = model(
     NUM_INPUT_FEATURES,
@@ -51,15 +52,23 @@ def main():
     NUM_LAYERS
   )
 
-  stocks = StockDataset(
-    MODEL_DATA_CSV,
+  # stocks = StockDataset(
+  #   MODEL_DATA_CSV,
+  #   INPUT_LENGTH,
+  #   lookahead
+  # )
+
+  seqStocks = SeqDataset(
+    'data/new_lstm.csv',
     INPUT_LENGTH,
     lookahead
   )
-  # print('stocks', np.array(stocks[0]['data']).shape)
+
+  # print('stock data', np.array(seqStocks[0]['data']))
+  # print('stock label', np.array(seqStocks[0]['label']))
 
   dataloader = DataLoader(
-    stocks,
+    seqStocks,
     batch_size=1,
     shuffle=True,
     num_workers=1,
@@ -73,8 +82,8 @@ def main():
   for e in range(EPOCHS):
     batch_loss = 0
     for i, batch in enumerate(dataloader):
-      out = StockMLModel(batch['data'].float())
-      loss = loss_function(out, batch['label'].float())
+      out = StockMLModel(batch['data'])
+      loss = loss_function(out, batch['label'])
       batch_loss += loss
 
       optimizer.zero_grad()
