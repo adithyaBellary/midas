@@ -17,13 +17,13 @@ from tradeEngine.models import TestTrade
 # print('t', t)
 
 LEARNING_RATE = 0.01
-EPOCHS = 10
+EPOCHS = 1
 # EPOCHS = 0
 
 STOCK = 'AAPL'
 FILE = 'new_lstm'
 MODEL_DATA_CSV = 'data/model_data.csv'
-NUM_DAYS_TRAINING_DATA = 200
+NUM_DAYS_TRAINING_DATA = 100
 
 # need to move this to a config module
 # how many input features we will be having
@@ -31,7 +31,7 @@ NUM_INPUT_FEATURES = 5
 # how many features are we predicting (just the close price percentage)
 NUM_OUTPUT_FEATURES = 1
 # hidden layer dimension
-HIDDEN_DIMENSION = 100
+HIDDEN_DIMENSION = 75
 # how many timesteps is our input data chunk
 INPUT_LENGTH = 25
 # num lstm layers
@@ -85,11 +85,11 @@ def main():
       data = torch.Tensor(batch['data'])
       data_size = data.size()
       data_reshape = data.view(data_size[0],1,data_size[1])
-      # print('new data sizr', data_reshape.size())
+      label = batch['label'].float()
+
       out = StockMLModel(data_reshape)
-      loss = loss_function(out, batch['label'].float())
-      # print('loss', loss)
-      # print('loss', type(loss))
+      loss = loss_function(out.view(1), label)
+
       batch_loss += loss
 
       optimizer.zero_grad()
