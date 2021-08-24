@@ -17,7 +17,7 @@ from tradeEngine.models import TestTrade
 # print('t', t)
 
 LEARNING_RATE = 0.01
-EPOCHS = 40
+EPOCHS = 10
 # EPOCHS = 0
 
 STOCK = 'AAPL'
@@ -27,13 +27,16 @@ NUM_DAYS_TRAINING_DATA = 200
 
 # need to move this to a config module
 # how many input features we will be having
-NUM_INPUT_FEATURES = 7
-# how many features are we predicting
-NUM_OUTPUT_FEATURES = 4
+NUM_INPUT_FEATURES = 5
+# how many features are we predicting (just the close price percentage)
+NUM_OUTPUT_FEATURES = 1
+# hidden layer dimension
 HIDDEN_DIMENSION = 100
+# how many timesteps is our input data chunk
 INPUT_LENGTH = 25
+# num lstm layers
 NUM_LAYERS = 2
-
+# how far ahead are we predicting
 lookahead = 15
 
 def main():
@@ -64,9 +67,6 @@ def main():
     lookahead
   )
 
-  # print('stock data', np.array(seqStocks[0]['data']))
-  # print('stock label', np.array(seqStocks[0]['label']))
-
   dataloader = DataLoader(
     seqStocks,
     batch_size=1,
@@ -82,8 +82,14 @@ def main():
   for e in range(EPOCHS):
     batch_loss = 0
     for i, batch in enumerate(dataloader):
-      out = StockMLModel(batch['data'])
-      loss = loss_function(out, batch['label'])
+      data = torch.Tensor(batch['data'])
+      data_size = data.size()
+      data_reshape = data.view(data_size[0],1,data_size[1])
+      # print('new data sizr', data_reshape.size())
+      out = StockMLModel(data_reshape)
+      loss = loss_function(out, batch['label'].float())
+      # print('loss', loss)
+      # print('loss', type(loss))
       batch_loss += loss
 
       optimizer.zero_grad()

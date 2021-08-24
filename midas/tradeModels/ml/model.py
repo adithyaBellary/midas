@@ -34,10 +34,8 @@ class StockLSTM(torch_nn.Module):
       proj_size=output_dimension,
       # input and output tensors are going to be
       # (batch, seq, eature) intead of (sequence, batch, feature) now
-      batch_first=True
+      # batch_first=True
     )
-
-    # self.hidden_to_output = torch_nn.Linear(self.hidden_dimension, self.output_dimension)
 
     self.timespan_reduction = torch_nn.Linear(prediction_timespan, 1)
 
@@ -46,16 +44,14 @@ class StockLSTM(torch_nn.Module):
     out, _ = self.lstm(x)
     # output will be (batch, seq, feature), so (1, prediction_timespan, output_dimension)
     output_size = out.size()
-    # print('output size', out.size())
-    out = torch.transpose(out.view(output_size[1], output_size[2]), 0, 1)
+    # print('output size', output_size)
+    out = torch.transpose(out.view(output_size[0], output_size[2]), 0, 1)
     # print('output size after transpose', out.size())
     out = self.timespan_reduction(out)
     # print('output size after size reduction', out.size())
     out = torch.transpose(out, 0, 1)
     # print('out size at the very end', out.size())
-    # out = self.hidden_to_output(out[:, -1, :])
-
-    # use  F.log_softmax(tag_space, dim=1) to convert scores -> probability (normalized to 1)
+    # print('out value', out)
     return out
 
 

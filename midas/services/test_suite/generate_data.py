@@ -2,6 +2,7 @@ from dotenv import load_dotenv, find_dotenv
 from datetime import datetime, timedelta, date, time
 import os
 import pandas as pd
+import os
 
 import alpaca_trade_api as tradeapi
 from alpaca_trade_api.rest import TimeFrame
@@ -31,7 +32,7 @@ def generate(
     secret_key = ALPACA_SECRET_KEY
     url = URL
 
-
+  file_name = f'data/{file_name}.csv'
   api = tradeapi.REST(
     key_id=key_id,
     secret_key=secret_key,
@@ -52,6 +53,10 @@ def generate(
     if CURRENT_WEEKDAY == 5 or CURRENT_WEEKDAY == 6:
       OFFSET = CURRENT_WEEKDAY - FRIDAY_DATE
 
+  # empty the existing file in that folder
+  if (os.path.exists(file_name)):
+    os.remove(file_name)
+
   for index, day in enumerate([datetime.today() - timedelta(days=x) for x in range(OFFSET,OFFSET + num_days)]):
     d_bars = api.get_bars(
       stock,
@@ -62,4 +67,4 @@ def generate(
       limit=LIMIT,
     ).df
 
-    d_bars.to_csv(f'data/{file_name}.csv', mode='a', header=index == 0)
+    d_bars.to_csv(file_name, mode='a', header=index == 0)
