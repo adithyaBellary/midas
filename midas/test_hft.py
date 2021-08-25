@@ -14,6 +14,7 @@ import alpaca_trade_api as tradeapi
 from alpaca_trade_api.common import URL as alpacaURL
 
 from tradeModels import ScalpModel as scalpModel
+from tradeModels.ml import MlEngine
 
 load_dotenv(find_dotenv())
 
@@ -30,9 +31,6 @@ async def print_trade(t):
 
 async def print_quote(q):
 	print('quote', q)
-
-async def on_bar(b):
-	print('bar', b)
 
 async def on_trade_update(tu):
 	print('on trade update', tu)
@@ -72,6 +70,16 @@ def run():
 		base_url=alpacaURL(url),
 		raw_data=True
 	)
+	engine = MlEngine(
+		weight_path='model_300_days_40_epochs.pt',
+		alpaca_api=api,
+		input_length=25,
+		lookahead=10
+	)
+
+	async def on_bar(b):
+		print('bar', b)
+		engine.on_bar(b)
 
 	stream.subscribe_trades(print_trade, 'AAPL')
 	stream.subscribe_quotes(print_quote, 'SPOT')
@@ -79,7 +87,8 @@ def run():
 	stream.subscribe_trade_updates(on_trade_update)
 	stream.subscribe_statuses(on_status_update, 'AAPL')
 
-	# stream.run()
+
+
 
 def run_hft():
 	run()

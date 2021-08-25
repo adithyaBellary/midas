@@ -28,8 +28,14 @@ class MlEngine:
     prediction = self.lstm_model(self.input)
     # submit order if it triggers the buy signal
 
+    # if it is going up
+
+    # if it is going down
 
   def on_bar(self, bar):
     self.input.append(bar)
     if len(self.input) == self.INPUT_LENGTH:
       self.make_prediction()
+
+
+      self.clear_input()
