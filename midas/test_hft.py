@@ -74,7 +74,8 @@ def run():
 		weight_path='model_300_days_40_epochs.pt',
 		alpaca_api=api,
 		input_length=25,
-		lookahead=10
+		lookahead=10,
+    stock='AAPL'
 	)
 
 	async def on_bar(b):
