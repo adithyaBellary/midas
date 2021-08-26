@@ -8,7 +8,15 @@ TO_BUY = 'to buy'
 TO_SELL = 'to sell'
 
 class MlEngine:
-  def __init__(self, weight_path: str, alpaca_api, input_length: int, lookahead: int, stock: str):
+  def __init__(
+    self,
+    weight_path: str,
+    alpaca_api,
+    input_length: int,
+    lookahead: int,
+    stock: str,
+    account
+  ):
     self.weight_path = weight_path
     self.lstm_model = self.load_model()
     self.api = alpaca_api
@@ -19,6 +27,7 @@ class MlEngine:
     self.state = TO_BUY
     self.buy_threshold = 1
     self.stock = stock
+    self.account = account
 
   def set_action_state(self, new_state):
     self.sate = new_state
