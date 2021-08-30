@@ -1,4 +1,7 @@
 {
   "python.linting.pylintEnabled": true,
-  "python.linting.enabled": false
+  "python.linting.enabled": false,
+  // to get pylance to work
+  "python.pythonPath": "/Users/adithya/.virtualenvs/midas/bin/python",
+  "python.envFile": "${workspaceFolder}/.envFile"
 }

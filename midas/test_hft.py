@@ -89,8 +89,6 @@ def run():
 	stream.subscribe_statuses(on_status_update, 'AAPL')
 
 
-
-
 def run_hft():
 	run()
 
