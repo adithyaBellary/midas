@@ -15,7 +15,6 @@ class Notification:
     )
 
   def send_message(self, message):
-    print(settings.TWILIO_SID, settings.TWILIO_AUTH, self.TWILIO_NUMBER)
     self.client.messages.create(
       to=self.MY_NUMBER,
       from_=self.TWILIO_NUMBER,
