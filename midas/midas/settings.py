@@ -27,6 +27,12 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True if os.environ.get('DEBUG') == 'TRUE' else False
 
+
+TWILIO_SID = os.environ.get('TWILIO_SID')
+TWILIO_AUTH = os.environ.get('TWILIO_AUTH')
+TWILIO_NUMBER = os.environ.get('TWILIO_NUMBER')
+MY_NUMBER = os.environ.get('MY_NUMBER')
+
 ALLOWED_HOSTS = []
 
 # Application definition
@@ -40,7 +46,8 @@ INSTALLED_APPS = [
   'django.contrib.messages',
   'django.contrib.staticfiles',
   'ariadne.contrib.django',
-  'corsheaders',
+  'corsheaders'
+  'midas',
 ]
 
 MIDDLEWARE = [

@@ -1,1 +1,1 @@
-from . import test_suite
+from . import test_suite, notification_engine

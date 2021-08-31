@@ -27,6 +27,7 @@ Pillow==8.1.2
 psycopg2==2.9.1
 pycodestyle==2.7.0
 pyflakes==2.3.1
+PyJWT==1.7.1
 pylint==2.7.4
 pymongo==3.11.2
 pyparsing==2.4.7
@@ -41,6 +42,7 @@ toml==0.10.2
 torch==1.8.1
 torchaudio==0.8.1
 torchvision==0.9.1
+twilio==6.63.1
 typing-extensions==3.7.4.3
 urllib3==1.25.11
 websocket-client==0.57.0
