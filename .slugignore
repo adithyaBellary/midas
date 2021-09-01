@@ -1,5 +1,5 @@
-/data
-/figures
-/weights
+/data/**
+/figures/**
+/weights/**
 
-# **/__pycache__/**
+**/__pycache__/**
