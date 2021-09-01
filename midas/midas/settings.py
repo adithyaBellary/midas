@@ -33,7 +33,9 @@ TWILIO_AUTH = os.environ.get('TWILIO_AUTH')
 TWILIO_NUMBER = os.environ.get('TWILIO_NUMBER')
 MY_NUMBER = os.environ.get('MY_NUMBER')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+  'http://localhost/'
+]
 
 # Application definition
 
