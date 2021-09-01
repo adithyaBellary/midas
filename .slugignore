@@ -1,0 +1,5 @@
+/data
+/figures
+/weights
+
+# **/__pycache__/**
