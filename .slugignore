@@ -3,3 +3,8 @@
 /weights/**
 
 **/__pycache__/**
+
+/investigation/**
+/.vscode/**
+/.vscode-parent/**
+/shared/**
