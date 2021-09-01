@@ -57,6 +57,9 @@ def generate(
   if (os.path.exists(file_name)):
     os.remove(file_name)
 
+  if not os.path.exists('data/'):
+    os.mkdir('data/')
+
   for index, day in enumerate([datetime.today() - timedelta(days=x) for x in range(OFFSET,OFFSET + num_days)]):
     d_bars = api.get_bars(
       stock,

@@ -4,6 +4,7 @@
 node_modules/
 .eslintcache
 build/
-midas/data
-midas/figures
-midas/weights
+
+data
+figures
+weights
