@@ -39,9 +39,6 @@ six==1.15.0
 sqlparse==0.2.4
 starlette==0.13.8
 toml==0.10.2
-# torch==1.8.1
-# torchaudio==0.8.1
-# torchvision==0.9.1
 twilio==6.63.1
 typing-extensions==3.7.4.3
 urllib3==1.25.11
@@ -49,3 +46,7 @@ websocket-client==0.57.0
 websockets==8.1
 whitenoise==5.3.0
 wrapt==1.12.1
+-f https://download.pytorch.org/whl/cpu/torch_stable.html
+torchaudio==0.8.1
+torchvision==0.9.1
+torch==1.8.1
