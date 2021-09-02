@@ -46,6 +46,8 @@ websocket-client==0.57.0
 websockets==8.1
 whitenoise==5.3.0
 wrapt==1.12.1
+# we need this link so that we can download the CPU only versions of torch
+# which are lower in memory. The larger sizes are too big to deploy to heroku
 -f https://download.pytorch.org/whl/cpu/torch_stable.html
 torchaudio==0.8.1
 torchvision==0.9.1
