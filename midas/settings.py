@@ -34,7 +34,8 @@ TWILIO_NUMBER = os.environ.get('TWILIO_NUMBER')
 MY_NUMBER = os.environ.get('MY_NUMBER')
 
 ALLOWED_HOSTS = [
-  'http://localhost/'
+  'http://localhost/',
+  'https://midas-app-server.herokuapp.com/'
 ]
 
 # Application definition
