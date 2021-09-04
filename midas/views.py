@@ -5,7 +5,6 @@ from django.views.decorators.http import require_http_methods
 from django_twilio.decorators import twilio_view
 
 from twilio.twiml.messaging_response import MessagingResponse, Message
-# from twilio.twiml import
 
 from tradeEngine.models import TestTrade
 
@@ -18,14 +17,10 @@ def HomeView(request):
 
 # maybe we dont have to do exempy csrf for all post requests?
 # https://www.twilio.com/blog/2014/04/building-a-simple-sms-message-application-with-twilio-and-django-2.html
-# @csrf_exempt
 @twilio_view
 @require_http_methods(["POST"])
 def SMS(request):
-  # print('request method', request.method)
   resp = MessagingResponse()
   resp.message("The Robots are coming! Head for the hills!")
 
   return HttpResponse(resp.to_xml(), content_type='text/xml')
-  # twiml = '<Response><Message>Hello from your Django app!</Message></Response>'
-  # return HttpResponse(twiml, content_type='text/xml')
