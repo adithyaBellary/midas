@@ -28,13 +28,14 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 DEBUG = True if os.environ.get('DEBUG') == 'TRUE' else False
 
 
-TWILIO_SID = os.environ.get('TWILIO_SID')
-TWILIO_AUTH = os.environ.get('TWILIO_AUTH')
+TWILIO_ACCOUNT_SID = os.environ.get('TWILIO_ACCOUNT_SID')
+TWILIO_AUTH_TOKEN = os.environ.get('TWILIO_AUTH_TOKEN')
 TWILIO_NUMBER = os.environ.get('TWILIO_NUMBER')
 MY_NUMBER = os.environ.get('MY_NUMBER')
 
 ALLOWED_HOSTS = [
-  'http://localhost/'
+  'http://localhost/',
+  'https://midas-app-server.herokuapp.com/'
 ]
 
 # Application definition
