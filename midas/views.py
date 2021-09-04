@@ -15,6 +15,7 @@ def HomeView(request):
   return HttpResponse('this is the midas home')
 
 # maybe we dont have to do exempy csrf for all post requests?
+# https://www.twilio.com/blog/2014/04/building-a-simple-sms-message-application-with-twilio-and-django-2.html
 @csrf_exempt
 @require_http_methods(["POST"])
 def SMS(request):
@@ -22,5 +23,5 @@ def SMS(request):
   resp = MessagingResponse()
   resp.message("The Robots are coming! Head for the hills!")
 
-  return str(resp)
-  # return HttpResponse('sms here')
+  # return str(resp)
+  return HttpResponse(str(resp), content_type='text/xml')
