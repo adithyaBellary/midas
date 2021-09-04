@@ -24,4 +24,6 @@ def SMS(request):
   resp.message("The Robots are coming! Head for the hills!")
 
   # return str(resp)
-  return HttpResponse(str(resp), content_type='text/xml')
+  # return HttpResponse(str(resp), content_type='text/xml')
+  twiml = '<Response><Message>Hello from your Django app!</Message></Response>'
+  return HttpResponse(twiml, content_type='text/xml')
