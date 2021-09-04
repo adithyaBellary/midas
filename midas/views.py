@@ -8,6 +8,8 @@ from twilio.twiml.messaging_response import MessagingResponse, Message
 
 from tradeEngine.models import TestTrade
 
+from services import notification_engine
+
 @require_http_methods(["GET"])
 def HomeView(request):
   print('the home')
